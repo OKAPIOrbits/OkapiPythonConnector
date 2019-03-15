@@ -1,4 +1,4 @@
-from OkapiSendGeneralRequest import okapi_send_general_request
+from okapi_send_general_request import okapi_send_general_request
 
 
 def okapi_send_passprediction_request(okapi_login, pass_prediction_request,
