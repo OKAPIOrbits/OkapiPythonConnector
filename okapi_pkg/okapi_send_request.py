@@ -1,21 +1,19 @@
-import json
 import requests
+import json
 
 
-def okapi_send_general_request(okapi_login, general_request,
-                               url_endpoint, request_endpoint):
+def okapi_send_request(okapi_login, request_body, url_endpoint):
     # OkapiSendPassPredictionRequest() Send pass prediction request to okapi
     #
     #   Inputs
     #       okapi_login - Dict, containing at least URL, options and Token for
     #       okapi. Can be obtained using OkapiInit().
-    #       PassPredictionRequest - Dict containing the request. A dict of
-    #       the correct format can be gained by OkapiGetPassPredictionRequest.
-    #       typeOfRequest - 'track' for tracking file, 'overview' for an
+    #       request_body - The body of the request (thus: the message).
+    #       url_endpoint - the url, where-to send the request
     #
     #   Outputs
-    #       request - dict containing the request_id and request_type, needed
-    #                 to get the results from okapi.
+    #       request - dict containing the request_id needed to identify the
+    #                 result on OKAPI servers.
     #       error - Dict containing error information. Always check
     #               error['status'] If it is 'FATAL' something went very wrong,
     #               'WARNING's are less critical and 'NONE' or 'INFO' are no
@@ -35,7 +33,7 @@ def okapi_send_general_request(okapi_login, general_request,
     url = okapi_login["url"] + url_endpoint
 
     try:
-        response = requests.post(url, data=json.dumps(general_request),
+        response = requests.post(url, data=json.dumps(request_body),
                                  headers=okapi_login['header'], timeout=5)
         # raise for status
         response.raise_for_status()
@@ -45,7 +43,7 @@ def okapi_send_general_request(okapi_login, general_request,
         # look at
         if (response.status_code == 500):
             response_json = response.json()
-            state_msg = response_json['stateMsg']
+            state_msg = response_json['state_msg']
             error['message'] = state_msg['text']
             error['status'] = state_msg['type']
         else:
@@ -59,7 +57,7 @@ def okapi_send_general_request(okapi_login, general_request,
         error['web_status'] = 408
         return request, error
     except requests.exceptions.RequestException:
-        error['message'] = 'Got unknown exception. '
+        error['message'] = 'Got unknown exception (Wrong url?).'
         error['status'] = 'FATAL'
         error['web_status'] = 520  # non-standard
         return request, error
@@ -68,13 +66,12 @@ def okapi_send_general_request(okapi_login, general_request,
     response_json = response.json()
 
     # fill error
-    state_msg = response_json['stateMsg']
+    state_msg = response_json['state_msg']
     error['message'] = state_msg['text']
     error['status'] = state_msg['type']
     error['web_status'] = response.status_code
 
     # fill request -- depending on what has been called!
-    request['id'] = response_json['requestId']
-    request['service'] = request_endpoint
+    request['id'] = response_json['request_id']
 
     return request, error

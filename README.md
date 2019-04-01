@@ -8,4 +8,6 @@ Dependencies:
 * python3
 * Python modules "requests", "time", "json"
 
-Example: See src/tryout.py
+Example: See okapi_pkg/tryout.py
+
+For more information, go to www.okapiorbits.space/documentation

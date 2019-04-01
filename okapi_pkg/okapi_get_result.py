@@ -1,17 +1,17 @@
 import requests
 
 
-def okapi_get_result(picard_login, request):
+def okapi_get_result(picard_login, request, url_endpoint):
     # OkapiGetResult() Get results from Picard
     #
     #   Inputs
     #       picard_login - Dict, containing at least URL, options and Token for
     #       Picard. Can be obtained using OkapiInit().
-    #       request - dict containing the request_id and request_type, needed
-    #       to get the results from Picard.
+    #       request - dict containing the request_id
+    #       url_endpoint - adress, from which the results shall be retrieved
     #
     #   Outputs
-    #       results - list, containing the results from the request
+    #       results - dict, containing the results from the request
     #       error - Dict containing error information. Always check
     #               error['status'] If it is 'FATAL' something went very wrong,
     #               'WARNING's are less critical and 'NONE' or 'INFO' are no
@@ -26,16 +26,16 @@ def okapi_get_result(picard_login, request):
     error['web_status'] = 0
 
     # check the input
-    if not('id' in request) or not('service' in request):
+    if not('id' in request):
         error['message'] = 'Request was empty or incomplete.'
         error['status'] = 'FATAL'
         error['web_status'] = 204
         return result, error
 
-    url = picard_login["url"]+request["service"]+'/' + str(request["id"])
-    # print(type(url))
+    url = picard_login["url"] + url_endpoint + '/' + str(request["id"])
+
     try:
-        result["service"] = request["service"]
+        result["service"] = url_endpoint
         response = requests.get(url, headers=picard_login["header"], timeout=5)
 
         # raise for status!
@@ -45,15 +45,17 @@ def okapi_get_result(picard_login, request):
         # nicely provided to us
         result = response.json()
         i = 0
+        print(result)
+        print(type(result))
         while i < len(result):
             # Get the state msgs and stuff
             current_result_dict = result[i]
-            if ('stateMsg' in current_result_dict):
-                state_msg = current_result_dict['stateMsg']
+            if ('state_msg' in current_result_dict):
+                state_msg = current_result_dict['state_msg']
                 error['status'] = state_msg['text']
                 error['message'] = state_msg['type']
-            elif('stateMsgs' in current_result_dict):
-                state_msgs = current_result_dict['stateMsgs']
+            elif('state_msgs' in current_result_dict):
+                state_msgs = current_result_dict['state_msgs']
                 # go through all the messages, check if there is fatal
                 j = 0
                 while j < len(state_msgs):
@@ -71,13 +73,13 @@ def okapi_get_result(picard_login, request):
         # need to get the response from the result to send the error
         result = response.json()
         result_dict = result[0]
-        if ('stateMsg' in result_dict):
-            state_msg = result_dict['stateMsg']
+        if ('state_msg' in result_dict):
+            state_msg = result_dict['state_msg']
             error['status'] = state_msg['text']
             error['message'] = state_msg['type']
-        elif('stateMsgs' in result_dict):
+        elif('state_msgs' in result_dict):
             result_dict = result[1]
-            state_msgs = result_dict['stateMsgs']
+            state_msgs = result_dict['state_msgs']
 
             print("Printing all that")
             print(result_dict)
