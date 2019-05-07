@@ -68,6 +68,12 @@ def okapi_get_result(picard_login, request, url_endpoint):
 
         error['web_status'] = response.status_code
 
+        # Finally: Check, if status is 202 which means "results might not be
+        # complete"
+        if ((response.status_code == 202) and (error['status'] != 'FATAL')):
+            error['status'] = 'WARNING'
+            error['message'] = 'Result has been accepted but not been fully processed yet.'
+
     except requests.exceptions.HTTPError:
 
         # need to get the response from the result to send the error
@@ -80,11 +86,6 @@ def okapi_get_result(picard_login, request, url_endpoint):
         elif('state_msgs' in result_dict):
             result_dict = result[1]
             state_msgs = result_dict['state_msgs']
-
-            print("Printing all that")
-            print(result_dict)
-            print(state_msgs)
-            print()
 
             state_msgs_temp = state_msgs[0]
             error['status'] = state_msgs_temp['text']
