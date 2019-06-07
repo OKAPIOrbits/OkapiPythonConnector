@@ -1,7 +1,8 @@
 import requests
 
 
-def okapi_get_result(picard_login, request, url_endpoint):
+def okapi_get_result(picard_login, request, url_endpoint,
+                     generic_or_not = 'not'):
     # OkapiGetResult() Get results from Picard
     #
     #   Inputs
@@ -9,6 +10,8 @@ def okapi_get_result(picard_login, request, url_endpoint):
     #       Picard. Can be obtained using OkapiInit().
     #       request - dict containing the request_id
     #       url_endpoint - adress, from which the results shall be retrieved
+    #       generic_or_not - flag indicating if generic result shall be
+    #                        retrieved. Optional, use 'generic' if you want that
     #
     #   Outputs
     #       results - dict, containing the results from the request
@@ -20,6 +23,7 @@ def okapi_get_result(picard_login, request, url_endpoint):
 
     # init
     result = dict()
+    result_dict = dict()
     error = dict()
     error['message'] = 'NONE'
     error['status'] = 'NONE'
@@ -32,7 +36,10 @@ def okapi_get_result(picard_login, request, url_endpoint):
         error['web_status'] = 204
         return result, error
 
-    url = picard_login["url"] + url_endpoint + '/' + str(request["id"])
+    if ( generic_or_not == 'generic' ):
+        url = picard_login["url"] + url_endpoint + '/' + str(request["id"]) + '/generic'
+    else:
+        url = picard_login["url"] + url_endpoint + '/' + str(request["id"])
 
     try:
         result["service"] = url_endpoint
@@ -45,26 +52,33 @@ def okapi_get_result(picard_login, request, url_endpoint):
         # nicely provided to us
         result = response.json()
         i = 0
-        print(result)
-        print(type(result))
-        while i < len(result):
-            # Get the state msgs and stuff
-            current_result_dict = result[i]
-            if ('state_msg' in current_result_dict):
-                state_msg = current_result_dict['state_msg']
-                error['status'] = state_msg['text']
-                error['message'] = state_msg['type']
-            elif('state_msgs' in current_result_dict):
-                state_msgs = current_result_dict['state_msgs']
-                # go through all the messages, check if there is fatal
-                j = 0
-                while j < len(state_msgs):
-                    state_msgs_temp = state_msgs[j]
-                    error['status'] = state_msgs_temp['text']
-                    error['message'] = state_msgs_temp['type']
-                    j += 1
 
-            i += 1
+        # did we try to get a generic result?
+        if (generic_or_not == 'generic'):
+
+            error['status'] = result['okapi_output']['status']['content']['type']
+            error['message'] = result['okapi_output']['status']['content']['text']
+
+        else:
+
+            while i < len(result):
+                # Get the state msgs and stuff
+                current_result_dict = result[i]
+                if ('state_msg' in current_result_dict):
+                    state_msg = current_result_dict['state_msg']
+                    error['status'] = state_msg['type']
+                    error['message'] = state_msg['text']
+                elif('state_msgs' in current_result_dict):
+                    state_msgs = current_result_dict['state_msgs']
+                    # go through all the messages, check if there is fatal
+                    j = 0
+                    while j < len(state_msgs):
+                        state_msgs_temp = state_msgs[j]
+                        error['status'] = state_msgs_temp['type']
+                        error['message'] = state_msgs_temp['text']
+                        j += 1
+
+                i += 1
 
         error['web_status'] = response.status_code
 
@@ -77,19 +91,24 @@ def okapi_get_result(picard_login, request, url_endpoint):
     except requests.exceptions.HTTPError:
 
         # need to get the response from the result to send the error
-        result = response.json()
-        result_dict = result[0]
+        try:
+            result = response.json()
+            result_dict = result[0]
+        except:
+            result = dict()
+            result_dict = dict()
+
         if ('state_msg' in result_dict):
             state_msg = result_dict['state_msg']
-            error['status'] = state_msg['text']
-            error['message'] = state_msg['type']
+            error['status'] = state_msg['type']
+            error['message'] = state_msg['text']
         elif('state_msgs' in result_dict):
             result_dict = result[1]
             state_msgs = result_dict['state_msgs']
 
             state_msgs_temp = state_msgs[0]
-            error['status'] = state_msgs_temp['text']
-            error['message'] = state_msgs_temp['type']
+            error['status'] = state_msgs_temp['type']
+            error['message'] = state_msgs_temp['text']
 
         error['web_status'] = response.status_code
         return result, error

@@ -25,7 +25,7 @@ if (error['status'] == 'FATAL'):
     exit('Error during authentification.')
 elif(error['status'] == 'WARNING'):
     print(error)
-print(okapi_login)
+# print(okapi_login)
 
 
 #
@@ -89,6 +89,7 @@ time.sleep(15)
 # available soon)
 
 # get the result from SGP4
+print("Getting pass predictions SGP4 result")
 result_sgp4, error = okapi_get_result(okapi_login, request_sgp4,
                                       'predict-passes/sgp4/simple/results')
 if (error['status'] == 'FATAL'):
@@ -99,6 +100,7 @@ elif(error['status'] == 'WARNING'):
 # print(result_sgp4)
 
 # get the overview results (note: will be replaced soon)
+print("Getting pass predictions result")
 result_overview, error = okapi_get_result(okapi_login, request_overview,
                                           'pass/predictions')
 if (error['status'] == 'FATAL'):
@@ -109,6 +111,7 @@ elif(error['status'] == 'WARNING'):
 # print(result_overview)
 
 # get the tracking file (will be replaced soon)
+print("Getting pass predictions long result")
 result_track, error = okapi_get_result(okapi_login, request_track,
                                        'pass/predictions/long')
 if (error['status'] == 'FATAL'):
@@ -164,13 +167,14 @@ if (error['status'] == 'FATAL'):
     exit()
 elif(error['status'] == 'WARNING'):
     print(error)
-print(request_neptune_simple)
+# print(request_neptune_simple)
 
 # again, give the server some time to process therequest. Note that numerical
 # propagation can take a while
 time.sleep(25)
 
 # get the results from the simple request as oem results
+print("Getting OEM result")
 result_oem, error = okapi_get_result(okapi_login, request_neptune_simple,
                                      'propagate-orbit/neptune/oem/results')
 if (error['status'] == 'FATAL'):
@@ -181,6 +185,7 @@ elif(error['status'] == 'WARNING'):
 # print(result_oem)
 
 # or as opm
+print("Getting OPM result")
 result_opm, error = okapi_get_result(okapi_login, request_neptune_simple,
                                      'propagate-orbit/neptune/opm/results')
 if (error['status'] == 'FATAL'):
@@ -192,7 +197,7 @@ elif(error['status'] == 'WARNING'):
 
 
 # you can also send the result as OPM, which provide some more details for
-# input. Note that all fields´are required. Again, neptune_config and all
+# input. Note that all fields are required. Again, neptune_config and all
 # parameters from there are optional
 propagate_neptune_opm_request_body = {
     "CCSDS_OPM": {
@@ -241,7 +246,7 @@ if (error['status'] == 'FATAL'):
     exit()
 elif(error['status'] == 'WARNING'):
     print(error)
-print(request_neptune_opm)
+# print(request_neptune_opm)
 
 # again, the server needs some time to process the request. Instead of sleeping
 # we introduce a "while" loop and just ask the surver until we get the
@@ -252,6 +257,7 @@ error['web_status'] = 202
 while (counter < 15) and (error['web_status'] == 202):
 
     # get the results from the OPM request as simple state
+    print("Getting OPM result in loop")
     result_simple, error = okapi_get_result(
         okapi_login, request_neptune_opm,
         'propagate-orbit/neptune/simple/results')
@@ -260,7 +266,7 @@ while (counter < 15) and (error['web_status'] == 202):
         exit()
     elif(error['status'] == 'WARNING'):
         print(error)
-    print(result_simple)
+    #print(result_simple)
 
     # we wait a second, to not trigger some DOD on the server ;-)
     time.sleep(1)
@@ -279,6 +285,7 @@ propagate_sgp4_request_body = {
 }
 
 # send it to the server
+print("Getting OPM result")
 request_neptune_opm, error = okapi_send_request(
     okapi_login,
     propagate_sgp4_request_body,
@@ -286,7 +293,7 @@ request_neptune_opm, error = okapi_send_request(
 if (error['status'] == 'FATAL'):
     print(error)
     exit()
-print(request_neptune_opm)
+# print(request_neptune_opm)
 
 # sgp4 is rather fast, so we do not have to wait that long.
 time.sleep(2)
@@ -300,7 +307,7 @@ if (error['status'] == 'FATAL'):
     exit()
 elif(error['status'] == 'WARNING'):
     print(error)
-print(result_simple)
+# print(result_simple)
 
 # as omm result
 print("Getting OMM result")
@@ -311,4 +318,4 @@ if (error['status'] == 'FATAL'):
     exit()
 elif(error['status'] == 'WARNING'):
     print(error)
-print(result_simple)
+# print(result_simple)
