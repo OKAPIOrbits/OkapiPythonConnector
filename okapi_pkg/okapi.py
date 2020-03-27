@@ -11,7 +11,7 @@ class Okapi:
   def get_status_severity(status_type):
     if status_type == "NONE":
       return 0
-    elif status_type == "NORMAL:
+    elif status_type == "NORMAL":
       return 100
     elif status_type == "REMARK":
       return 200
@@ -73,17 +73,12 @@ class Okapi:
     
     connector_response = dict()
     try:
-      connector_response = response.json()
+      connector_response["actual_response"] = response.json()
     except:
       #print("Could not convert response data to json")
-      connector_response["non_json_data"] = response.content
-    #connector_response["connector_status"] = connector_status
+      connector_response["actual_response"] = response.content
+    connector_response["status"] = connector_status
     #print("auch hier: " + str(connector_response))
-
-
-    # merge statuses
-    
-
     return connector_response
 
 
