@@ -22,7 +22,7 @@ print("TDM-Get result status: " + str(response["status"]))
 #  sys.exit(1)
 print("TDM-Get result data: " + str(response["actual_response"]))
 
-response = okapi.tdms.add("18402-0001-87087A-0000.kvn", "txt")
+response = okapi.tdms.add(TDM_KVN_TXT_FILE_PATH_AS_STRING, "txt")
 
 print("TDM-Add result status: " + str(response["status"]))
 #if response["status"]["type"] == "FATAL":
