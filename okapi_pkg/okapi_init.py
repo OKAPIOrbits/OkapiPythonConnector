@@ -54,7 +54,8 @@ def okapi_init(url, username, password):
             "header": {
                 "Content-Type": "application/json",
                 "Accept": "application/json",
-                "access_token": okapi_login_token["access_token"],
+                "access_token": okapi_login_token["access_token"], # Legacy
+                "Authorization": "Bearer " + okapi_login_token["access_token"],
                 "expires_in": str(okapi_login_token["expires_in"]),
                 "token_type": okapi_login_token["token_type"],
                 "scope": okapi_login_token["scope"]
