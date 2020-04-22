@@ -38,7 +38,7 @@ def okapi_send_request(okapi_login, request_body, url_endpoint):
         # raise for status
         response.raise_for_status()
 
-    except requests.exceptions.HTTPError:
+    except requests.exceptions.HTTPError as e:
         # if we got a 500, we received an internal error.This we would like to
         # look at
         if (response.status_code == 500):
@@ -47,17 +47,17 @@ def okapi_send_request(okapi_login, request_body, url_endpoint):
             error['message'] = state_msg['text']
             error['status'] = state_msg['type']
         else:
-            error['message'] = 'Got HTTPError when sending request. '
+            error['message'] = 'Got HTTPError when sending request: ' + str(e)
             error['status'] = 'FATAL'
         error['web_status'] = response.status_code
         return request, error
-    except requests.exceptions.Timeout:
-        error['message'] = 'Got timeout when sending request. '
+    except requests.exceptions.Timeout as e:
+        error['message'] = 'Got timeout when sending request: ' + str(e)
         error['status'] = 'FATAL'
         error['web_status'] = 408
         return request, error
-    except requests.exceptions.RequestException:
-        error['message'] = 'Got unknown exception (Wrong url?).'
+    except requests.exceptions.RequestException as e:
+        error['message'] = 'Got unknown exception (Wrong url?): ' + str(e)
         error['status'] = 'FATAL'
         error['web_status'] = 520  # non-standard
         return request, error
