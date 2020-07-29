@@ -43,11 +43,13 @@ def okapi_send_request(okapi_login, request_body, url_endpoint):
         # look at
         if (response.status_code == 500):
             response_json = response.json()
-            state_msg = response_json['state_msg']
-            error['message'] = state_msg['text']
-            error['status'] = state_msg['type']
+            status = response_json['state_msg']
+            error['message'] = status['text']
+            error['status'] = status['type']
         else:
             error['message'] = 'Got HTTPError when sending request: ' + str(e)
+            # DEBUG
+            # print("HTTP Response " + str(response.json()))
             error['status'] = 'FATAL'
         error['web_status'] = response.status_code
         return request, error
@@ -63,12 +65,14 @@ def okapi_send_request(okapi_login, request_body, url_endpoint):
         return request, error
 
     # apparently, all when smoothly. Get the responses
+    # DEBUG
+    # print("HTTP Response " + str(response.json())) 
     response_json = response.json()
 
     # fill error
-    state_msg = response_json['state_msg']
-    error['message'] = state_msg['text']
-    error['status'] = state_msg['type']
+    status = response_json['status']   # state_msg = response_json['state_msg']
+    error['message'] = status['text']
+    error['status'] = status['type']
     error['web_status'] = response.status_code
 
     # fill request -- depending on what has been called!
