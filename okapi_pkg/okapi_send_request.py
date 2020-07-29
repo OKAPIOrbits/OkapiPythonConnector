@@ -39,6 +39,9 @@ def okapi_send_request(okapi_login, request_body, url_endpoint):
         response.raise_for_status()
 
     except requests.exceptions.HTTPError as e:
+        print("Exception: " + str(e))
+        print("Response Body: {}".format(response.json()))
+        
         # if we got a 500, we received an internal error.This we would like to
         # look at
         if (response.status_code == 500):

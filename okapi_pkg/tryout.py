@@ -16,9 +16,10 @@ from okapi_get_result import okapi_get_result
 # Init --> Get a token to run the analyses
 #
 # For auth info: See www.okapiorbits.space or contact us
-okapi_login, error = okapi_init(  "http://okapi.ddns.net:31002/",
-                                 "marvin.berger@tu-braunschweig.de" ,
-                                 "IhdPWa201" )
+okapi_login, error = okapi_init(  < adress to okapi server as string > ,
+                                 < user account as string > ,
+                                 < user password as string > )
+print("OkapiLogin: {}".format(okapi_login))
 # check for the error status
 if (error['status'] == 'FATAL'):
     print(error)
@@ -53,14 +54,25 @@ pass_pred_request_body = {
             "start": "2018-08-07T18:00:00.000Z",
             "end": "2018-08-08T00:00:00.000Z"
         }
+    },
+    "settings": {
+        "type": "shared_prop_settings.json",
+        "content": {
+            "output_step_size": 60
+        }
     }
+
 }
+
 #
 # # send different pass prediction pass prediction requests
 #
 # # send a request to use SGP4 for pass prediction
 request_sgp4, error = okapi_send_request(okapi_login, pass_pred_request_body,
                                          'predict-passes/sgp4/requests')
+# DEBUG                                        
+# print("RequestSGP4: {}".format(request_sgp4))
+# print("RequestError: {}".format(error))
 if (error['status'] == 'FATAL'):
     print(error)
     exit()
@@ -69,7 +81,7 @@ elif(error['status'] == 'WARNING'):
 # print(request_sgp4)
 
 # wait a short while to let the server process all requests
-time.sleep(5)
+time.sleep(15)
 
 # get the results and print them to the console
 
@@ -79,7 +91,7 @@ time.sleep(5)
 # get the result from SGP4
 print("Getting pass predictions SGP4 result")
 result_sgp4, error = okapi_get_result(okapi_login, request_sgp4,
-                                      'predict-passes/sgp4/simple/results')
+                                      'predict-passes/sgp4/results/{}/simple')
 if (error['status'] == 'FATAL'):
     print(error)
     exit()
@@ -140,7 +152,7 @@ time.sleep(25)
 # get the results from the simple request as oem results
 print("Getting OEM result")
 result_oem, error = okapi_get_result(okapi_login, request_neptune_simple,
-                                     'propagate-orbit/neptune/oem/results')
+                                     'propagate-orbit/neptune/results/{}/oem')
 if (error['status'] == 'FATAL'):
     print(error)
     exit()
@@ -151,7 +163,7 @@ elif(error['status'] == 'WARNING'):
 # or as opm
 print("Getting OPM result")
 result_opm, error = okapi_get_result(okapi_login, request_neptune_simple,
-                                     'propagate-orbit/neptune/opm/results')
+                                     'propagate-orbit/neptune/results/{}/opm')
 if (error['status'] == 'FATAL'):
     print(error)
     exit()
@@ -223,13 +235,13 @@ elif(error['status'] == 'WARNING'):
 # fully stuck for some reason
 counter = 0
 error['web_status'] = 202
-while (counter < 15) and (error['web_status'] == 202):
+while (counter < 50) and (error['web_status'] == 202):
 
     # get the results from the OPM request as simple state
     print("Getting OPM result in loop")
     result_simple, error = okapi_get_result(
         okapi_login, request_neptune_opm,
-        'propagate-orbit/neptune/simple/results')
+        'propagate-orbit/neptune/results/{}/simple')
     if (error['status'] == 'FATAL'):
         print(error)
         exit()
@@ -242,6 +254,7 @@ while (counter < 15) and (error['web_status'] == 202):
 
     counter += 1
 
+print("resultopm: {}".format(result_simple))
 #
 # Propagation: SGP4
 #
@@ -278,7 +291,7 @@ time.sleep(2)
 # as simple result
 print("Getting simple result")
 result_simple, error = okapi_get_result(
-    okapi_login, request_neptune_opm, 'propagate-orbit/sgp4/simple/results')
+    okapi_login, request_neptune_opm, 'propagate-orbit/sgp4/results/{}/simple')
 if (error['status'] == 'FATAL'):
     print(error)
     exit()
@@ -289,7 +302,7 @@ elif(error['status'] == 'WARNING'):
 # as omm result
 print("Getting OMM result")
 result_simple, error = okapi_get_result(
-    okapi_login, request_neptune_opm, 'propagate-orbit/sgp4/omm/results')
+    okapi_login, request_neptune_opm, 'propagate-orbit/sgp4/results/{}/omm')
 if (error['status'] == 'FATAL'):
     print(error)
     exit()
