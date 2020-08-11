@@ -54,7 +54,7 @@ def okapi_init(url, username, password):
             "header": {
                 "Content-Type": "application/json",
                 "Accept": "application/json",
-                "access_token": okapi_login_token["access_token"], # Legacy
+                #"access_token": okapi_login_token["access_token"], # Legacy
                 "Authorization": "Bearer " + okapi_login_token["access_token"],
                 "expires_in": str(okapi_login_token["expires_in"]),
                 "token_type": okapi_login_token["token_type"],
@@ -72,9 +72,10 @@ def okapi_init(url, username, password):
             error['status'] = 'FATAL'
             error['web_status'] = okapi_login_token_response.status_code
         else:
-            error['message'] = 'Got HTTPError when sending request. '
+            error['message'] = 'Got HTTP Error when sending request. '
             error['status'] = 'FATAL'
             error['web_status'] = okapi_login_token_response.status_code
+            print("Error occured: {}".format(err))
         return okapi_login, error
     except requests.exceptions.Timeout as err:
         print(err)

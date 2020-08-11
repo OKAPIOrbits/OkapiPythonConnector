@@ -36,10 +36,9 @@ def okapi_get_result(picard_login, request, url_endpoint,
         error['web_status'] = 204
         return result, error
 
-    if ( generic_or_not == 'generic' ):
-        url = picard_login["url"] + url_endpoint + '/' + str(request["id"]) + '/generic'
-    else:
-        url = picard_login["url"] + url_endpoint + '/' + str(request["id"])
+    url = picard_login["url"] + url_endpoint.format(str(request["id"]))
+
+    print("url {}".format(url))
 
     try:
         result["service"] = url_endpoint
@@ -51,34 +50,13 @@ def okapi_get_result(picard_login, request, url_endpoint,
         # extract result and stuff: Loop over all objects in the list that was
         # nicely provided to us
         result = response.json()
-        i = 0
 
-        # did we try to get a generic result?
-        if (generic_or_not == 'generic'):
-
-            error['status'] = result['okapi_output']['status']['content']['type']
-            error['message'] = result['okapi_output']['status']['content']['text']
-
-        else:
-
-            while i < len(result):
-                # Get the state msgs and stuff
-                current_result_dict = result[i]
-                if ('state_msg' in current_result_dict):
-                    state_msg = current_result_dict['state_msg']
-                    error['status'] = state_msg['type']
-                    error['message'] = state_msg['text']
-                elif('state_msgs' in current_result_dict):
-                    state_msgs = current_result_dict['state_msgs']
-                    # go through all the messages, check if there is fatal
-                    j = 0
-                    while j < len(state_msgs):
-                        state_msgs_temp = state_msgs[j]
-                        error['status'] = state_msgs_temp['type']
-                        error['message'] = state_msgs_temp['text']
-                        j += 1
-
-                i += 1
+        # Get the state msgs and stuff
+        current_result_dict = result
+        if ('status' in current_result_dict):
+            state_msg = current_result_dict['status']
+            error['status'] = state_msg['type']
+            error['message'] = state_msg['text']
 
         error['web_status'] = response.status_code
 
@@ -88,8 +66,9 @@ def okapi_get_result(picard_login, request, url_endpoint,
             error['status'] = 'WARNING'
             error['message'] = 'Result has been accepted but not been fully processed yet.'
 
-    except requests.exceptions.HTTPError:
-
+    except requests.exceptions.HTTPError as e:
+        print("Exception: " + str(e))
+        print("Response Body: {}".format(response.json()))
         # need to get the response from the result to send the error
         try:
             result = response.json()
