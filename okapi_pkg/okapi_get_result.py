@@ -38,7 +38,7 @@ def okapi_get_result(picard_login, request, url_endpoint,
 
     url = picard_login["url"] + url_endpoint.format(str(request["id"]))
 
-    print("url {}".format(url))
+    #print("url {}".format(url))
 
     try:
         result["service"] = url_endpoint
