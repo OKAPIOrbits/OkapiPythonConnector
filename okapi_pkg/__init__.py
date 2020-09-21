@@ -1,1 +1,2 @@
-__all__ = ["okapi_get_result", "okapi_send_request", "okapi_init"]
+__all__ = ["okapi_get_result", "okapi_send_request", "okapi_init","okapi_wait_and_get_result","okapi_send_request_and_wait_for_result",
+           "okapi_add_object", "okapi_change_object", "okapi_delete_object"]

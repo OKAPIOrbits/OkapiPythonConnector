@@ -1,12 +1,12 @@
 import requests
 
 
-def okapi_get_result(picard_login, request, url_endpoint):
-    # OkapiGetResult() Get results from Picard
+def okapi_get_result(okapi_login, request, url_endpoint):
+    # okapi_get_result() Get results from OKAPI Platform
     #
     #   Inputs
-    #       picard_login - Dict, containing at least URL, options and Token for
-    #       Picard. Can be obtained using OkapiInit().
+    #       okapi_login - Dict, containing at least URL, options and Token for
+    #       OKAPI. Can be obtained using OkapiInit().
     #       request - dict containing the request_id
     #       url_endpoint - adress, from which the results shall be retrieved
     #
@@ -33,13 +33,13 @@ def okapi_get_result(picard_login, request, url_endpoint):
         error['web_status'] = 204
         return result, error
 
-    url = picard_login["url"] + url_endpoint.format(str(request["id"]))
+    url = okapi_login["url"] + url_endpoint.format(str(request["id"]))
 
     #print("url {}".format(url))
 
     try:
         result["service"] = url_endpoint
-        response = requests.get(url, headers=picard_login["header"], timeout=5)
+        response = requests.get(url, headers=okapi_login["header"], timeout=5)
 
         # raise for status!
         response.raise_for_status()

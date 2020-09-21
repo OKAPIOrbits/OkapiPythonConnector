@@ -4,19 +4,31 @@ import time
 
 # Import OKAPI routines. If you use the script with OKAPI installed by PIP,
 # adapt it (see below)
-# from okapi_init import okapi_init
-# from okapi_send_request import okapi_send_request
-# from okapi_get_result import okapi_get_result
+from okapi_init import okapi_init
+from okapi_send_request import okapi_send_request
+from okapi_get_result import okapi_get_result
+from okapi_wait_and_get_result import okapi_wait_and_get_result
+from okapi_send_request_and_wait_for_result import okapi_send_request_and_wait_for_result
+from okapi_add_object import okapi_add_object
+from okapi_change_object import okapi_change_object
+from okapi_delete_object import okapi_delete_object
+from okapi_get_objects import okapi_get_objects
 
 # when using OKAPI installed with PIP:
-from okapi_pkg.okapi_init import okapi_init
-from okapi_pkg.okapi_send_request import okapi_send_request
-from okapi_pkg.okapi_get_result import okapi_get_result
+# from okapi_pkg.okapi_init import okapi_init
+# from okapi_pkg.okapi_send_request import okapi_send_request
+# from okapi_pkg.okapi_get_result import okapi_get_result
+# from okapi_pkg.okapi_wait_and_get_result import okapi_wait_and_get_result
+# from okapi_pkg.okapi_send_request_and_wait_for_result import okapi_send_request_and_wait_for_result
+# from okapi_pkg.okapi_add_object import okapi_add_object
+# from okapi_pkg.okapi_change_object import okapi_change_object
+# from okapi_pkg.okapi_delete_object import okapi_delete_object
+# from okapi_pkg.okapi_get_objects import okapi_get_objects
 
 #
 # Init --> Get a token to run the analyses
 #
-# For auth info: See www.okapiorbits.space or contact us. Standard url is: www.platform.okapiorbits.com/api
+# For auth info: See www.okapiorbits.space or contact us. Standard url is: https://platform.okapiorbits.com/api
 okapi_login, error = okapi_init(  < adress to okapi server as string > ,
                                  < user account as string > ,
                                  < user password as string > )
@@ -311,3 +323,66 @@ if (error['status'] == 'FATAL'):
 elif(error['status'] == 'WARNING'):
     print(error)
 # print(result_simple)
+
+
+
+# Examples on how to get, modify, set, and delete objects in the platform
+#
+# Get satellites (might be empty)
+#
+all_satellites, error = okapi_get_objects(okapi_login, 'satellites')
+
+# print(all_satellites)
+
+#
+# Add a satellite. NOTE: satellite_id will be overwritten
+#
+satellite_to_add = {
+    "satellite_id": "550e8400-e29b-11d4-a716-446655440000",
+    "name": "My testing satellite",
+    "norad_ids": ["124631"],
+    "area": 1,
+    "mass": 1,
+    "thrust_uncertainty": 2,
+    "thrust_pointing_uncertainty": 2,
+    "thrust_output": 1.1e-8,
+    "propulsion_type": "continuous",
+    "accepted_collision_probability": 0.0001,
+    "accepted_minimum_distance": 100,
+    "use_ai_risk_prediction": False,
+    "space_track_status": "satellite_registered",
+    "space_track_status_other": "string",
+    "space_track_company_name": "OKAPI:Orbits GmbH",
+    "space_track_poc_name": "Max Musterman",
+    "space_track_poc_address": "Examplestreet 32, 34562 Examplecity, Germany",
+    "space_track_login": "example@someprovider.com",
+    "active": True,
+    "maneuver_strategy": "short_term_and_long_term"
+}
+
+added_satellite, error = okapi_add_object(okapi_login, satellite_to_add,
+                                         'satellites')
+if (error.get('status','') == 'FATAL'):
+    print(error)
+    exit()
+
+#
+# Modify a satellite.
+#
+object_to_modify = added_satellite
+object_to_modify["name"] = "my dog, the other satellite"
+
+added_satellite, error = okapi_change_object(okapi_login, object_to_modify,
+                                             'satellites/')
+if (error.get('status','') == 'FATAL'):
+    print(error)
+    exit()
+
+#
+# Delete a satellite
+#
+deleted_satellite, error = okapi_delete_object(okapi_login, added_satellite,
+                                             'satellites/')
+if (error.get('status','') == 'FATAL'):
+    print(error)
+    exit()
