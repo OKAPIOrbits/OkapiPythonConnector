@@ -4,21 +4,23 @@ import time
 
 # Import OKAPI routines. If you use the script with OKAPI installed by PIP,
 # adapt it (see below)
-from okapi_init import okapi_init
-from okapi_send_request import okapi_send_request
-from okapi_get_result import okapi_get_result
+# from okapi_init import okapi_init
+# from okapi_send_request import okapi_send_request
+# from okapi_get_result import okapi_get_result
+
 # when using OKAPI installed with PIP:
-# from okapi_pkg.okapi_init import okapi_init
-# from okapi_pkg.okapi_send_request import okapi_send_request
-# from okapi_pkg.okapi_get_result import okapi_get_result
+from okapi_pkg.okapi_init import okapi_init
+from okapi_pkg.okapi_send_request import okapi_send_request
+from okapi_pkg.okapi_get_result import okapi_get_result
 
 #
 # Init --> Get a token to run the analyses
 #
-# For auth info: See www.okapiorbits.space or contact us
+# For auth info: See www.okapiorbits.space or contact us. Standard url is: www.platform.okapiorbits.com/api
 okapi_login, error = okapi_init(  < adress to okapi server as string > ,
                                  < user account as string > ,
                                  < user password as string > )
+
 print("OkapiLogin: {}".format(okapi_login))
 # check for the error status
 if (error['status'] == 'FATAL'):
@@ -70,7 +72,7 @@ pass_pred_request_body = {
 # # send a request to use SGP4 for pass prediction
 request_sgp4, error = okapi_send_request(okapi_login, pass_pred_request_body,
                                          'predict-passes/sgp4/requests')
-# DEBUG                                        
+# DEBUG
 # print("RequestSGP4: {}".format(request_sgp4))
 # print("RequestError: {}".format(error))
 if (error['status'] == 'FATAL'):
@@ -270,7 +272,7 @@ propagate_sgp4_request_body = {
             "more": {
                 "output_step_size": 100
             }
-        } 
+        }
     }
 }
 

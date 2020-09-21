@@ -3,7 +3,7 @@ import json
 
 
 def okapi_send_request(okapi_login, request_body, url_endpoint):
-    # OkapiSendPassPredictionRequest() Send pass prediction request to okapi
+    # okapi_send_request() Send request to okapi platform
     #
     #   Inputs
     #       okapi_login - Dict, containing at least URL, options and Token for
@@ -18,7 +18,7 @@ def okapi_send_request(okapi_login, request_body, url_endpoint):
     #               error['status'] If it is 'FATAL' something went very wrong,
     #               'WARNING's are less critical and 'NONE' or 'INFO' are no
     #               concern. error['message'] gives some explanation on the
-    #               status, error['web_states'] gives the http response.
+    #               status, error['web_status'] gives the http response.
 
     # check the type that is requested
 
@@ -41,7 +41,7 @@ def okapi_send_request(okapi_login, request_body, url_endpoint):
     except requests.exceptions.HTTPError as e:
         print("Exception: " + str(e))
         print("Response Body: {}".format(response.json()))
-        
+
         # if we got a 500, we received an internal error.This we would like to
         # look at
         if (response.status_code == 500):
@@ -69,7 +69,7 @@ def okapi_send_request(okapi_login, request_body, url_endpoint):
 
     # apparently, all when smoothly. Get the responses
     # DEBUG
-    # print("HTTP Response " + str(response.json())) 
+    # print("HTTP Response " + str(response.json()))
     response_json = response.json()
 
     # fill error

@@ -1,8 +1,7 @@
 import requests
 
 
-def okapi_get_result(picard_login, request, url_endpoint,
-                     generic_or_not = 'not'):
+def okapi_get_result(picard_login, request, url_endpoint):
     # OkapiGetResult() Get results from Picard
     #
     #   Inputs
@@ -10,8 +9,6 @@ def okapi_get_result(picard_login, request, url_endpoint,
     #       Picard. Can be obtained using OkapiInit().
     #       request - dict containing the request_id
     #       url_endpoint - adress, from which the results shall be retrieved
-    #       generic_or_not - flag indicating if generic result shall be
-    #                        retrieved. Optional, use 'generic' if you want that
     #
     #   Outputs
     #       results - dict, containing the results from the request
