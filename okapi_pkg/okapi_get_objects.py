@@ -1,7 +1,7 @@
 import requests
 
 
-def okapi_get_objects(okapi_login, url_endpoint):
+def okapi_get_objects(okapi_login, url_endpoint, sub_id = ''):
     # okapi_get_objects() Get objects from an endpoint
     #
     #   Inputs
@@ -16,6 +16,12 @@ def okapi_get_objects(okapi_login, url_endpoint):
     #               'WARNING's are less critical and 'NONE' or 'INFO' are no
     #               concern. error['message'] gives some explanation on the
     #               status, error['web_states'] gives the http response.
+    #   Examples
+    #      Get all conjunctions for one user
+    #       conjunctions, error = okapi_get_objects(okapi_login,'conjunctions')
+    #      Get all CDMs for the first conjunction of conjunctions
+    #       cdms, error = okapi_get_objects(okapi_login,'conjunctions/{}/cdms',conjunctions["elements"][0]["conjunction_id"])
+    #
 
     # init
     result = dict()
@@ -25,9 +31,11 @@ def okapi_get_objects(okapi_login, url_endpoint):
     error['status'] = 'NONE'
     error['web_status'] = 0
 
-    url = okapi_login["url"] + url_endpoint
-
-    #print("url {}".format(url))
+    # check what kind of object is requested
+    if (sub_id == ''):
+        url = okapi_login["url"] + url_endpoint
+    else:
+        url = okapi_login["url"] + url_endpoint.format(sub_id)
 
     try:
         result["service"] = url_endpoint

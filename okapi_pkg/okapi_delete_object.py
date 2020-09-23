@@ -28,7 +28,15 @@ def okapi_delete_object(okapi_login, object_to_delete, url_endpoint):
     error['status'] = 'NONE'
     error['web_status'] = 0
 
-    url = okapi_login["url"] + url_endpoint + object_to_delete["satellite_id"]
+    if ("satellite_id" in object_to_delete):
+        url = okapi_login["url"] + url_endpoint + object_to_delete["satellite_id"]
+    elif ("conjunction_id" in object_to_delete):
+        url = okapi_login["url"] + url_endpoint + object_to_delete["conjunction_id"]
+    else:
+        error['message'] = 'Object to delete appears incomplete. Missing id.'
+        error['status'] = 'FATAL'
+        error['web_status'] = 204
+        return result, error
 
     try:
         response = requests.delete(url, data=json.dumps(object_to_delete),
