@@ -6,7 +6,7 @@ Some routines to connect OKAPI:Orbits software with python.
 Dependencies:
 
 * python3
-* Python modules "requests", "time", "json"
+* Python modules "requests"
 
 Example: See okapi_pkg/tryout.py
 

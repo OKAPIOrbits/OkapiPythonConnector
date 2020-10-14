@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="okapi-python-connector",
-    version="v2020.09.03",
+    version="v2020.09.06",
     author="Jonas Radtke",
     author_email="jonas@okapiorbits.space",
     description="Package to connect to OKAPI Api",
@@ -14,9 +14,7 @@ setuptools.setup(
     url="https://github.com/OKAPIOrbits/OkapiPythonConnector",
     packages=setuptools.find_packages(),
     install_requires=[
-        'requests',
-        'time'.
-        'json'
+        'requests'
     ],
     classifiers=[
         "Programming Language :: Python :: 3",
