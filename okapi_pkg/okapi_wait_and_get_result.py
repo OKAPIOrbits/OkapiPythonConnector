@@ -1,8 +1,8 @@
 import requests
 import json
-from okapi_init import okapi_init
-from okapi_send_request import okapi_send_request
-from okapi_get_result import okapi_get_result
+# from okapi_init import okapi_init
+# from okapi_send_request import okapi_send_request
+# from okapi_get_result import okapi_get_result
 import time
 
 # this is a wrapper class that is supposed to wait for the result and return it automatically

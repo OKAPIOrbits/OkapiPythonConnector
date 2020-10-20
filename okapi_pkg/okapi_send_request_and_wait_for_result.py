@@ -1,8 +1,8 @@
 import requests
 import json
-from okapi_init import okapi_init
-from okapi_send_request import okapi_send_request
-from okapi_get_result import okapi_get_result
+# from okapi_init import okapi_init
+# from okapi_send_request import okapi_send_request
+# from okapi_get_result import okapi_get_result
 import time
 
 # This is a wrapper class that is supposed to make it easy to try the python connector
@@ -27,6 +27,7 @@ def okapi_send_request_and_wait_for_result(okapi_login, request_body, url_endpoi
 
     # send the request to the server
     request, error = okapi_send_request(okapi_login, request_body, url_endpoint_requests)
+
 
     if (error['status'] == 'FATAL'):
         print(error)
