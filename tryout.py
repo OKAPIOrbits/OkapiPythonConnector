@@ -7,8 +7,8 @@ from okapi_pkg import *
 #
 # Init --> Get a token to run the analyses
 #
-# For auth info: See www.okapiorbits.space or contact us. Standard url is: https://platform.okapiorbits.com/api/
-okapi_login, error = okapi_init(  "https://platform.okapiorbits.com/api/",
+# For auth info: See www.okapiorbits.space or contact us. Standard url is: https://api.okapiorbits.com/
+okapi_login, error = okapi_init(  "https://api.okapiorbits.com/",
                                  <username as string>,
                                  <password as string>)
 
