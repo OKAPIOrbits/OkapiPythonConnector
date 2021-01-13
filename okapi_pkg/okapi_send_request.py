@@ -31,41 +31,47 @@ def okapi_send_request(okapi_login, request_body, url_endpoint):
     error['web_status'] = 0
 
     url = okapi_login["url"] + url_endpoint
+    counter = 0
+    while(counter < 4):
 
-    try:
-        response = requests.post(url, data=json.dumps(request_body),
-                                 headers=okapi_login['header'], timeout=5)
-        # raise for status
-        response.raise_for_status()
+        try:
+            response = requests.post(url, data=json.dumps(request_body),
+                                    headers=okapi_login['header'], timeout=5)
+            # raise for status
+            response.raise_for_status()
+            break
 
-    except requests.exceptions.HTTPError as e:
-        print("Exception: " + str(e))
-        print("Response Body: {}".format(response.json()))
+        except requests.exceptions.HTTPError as e:
+            print("Exception: " + str(e))
+            print("Response Body: {}".format(response.json()))
 
-        # if we got a 500, we received an internal error.This we would like to
-        # look at
-        if (response.status_code == 500):
-            response_json = response.json()
-            status = response_json['state_msg']
-            error['message'] = status['text']
-            error['status'] = status['type']
-        else:
-            error['message'] = 'Got HTTPError when sending request: ' + str(e)
-            # DEBUG
-            # print("HTTP Response " + str(response.json()))
+            # if we got a 500, we received an internal error.This we would like to
+            # look at
+            if (response.status_code == 500):
+                response_json = response.json()
+                status = response_json['state_msg']
+                error['message'] = status['text']
+                error['status'] = status['type']
+            else:
+                error['message'] = 'Got HTTPError when sending request: ' + str(e)
+                # DEBUG
+                # print("HTTP Response " + str(response.json()))
+                error['status'] = 'FATAL'
+            error['web_status'] = response.status_code
+            return request, error
+        except requests.exceptions.Timeout as e:
+            if(counter == 3):     
+                error['message'] = 'Got timeout when sending request: ' + str(e)
+                error['status'] = 'FATAL'
+                error['web_status'] = 408
+                return request, error
+            counter += 1
+            continue 
+        except requests.exceptions.RequestException as e:
+            error['message'] = 'Got unknown exception (Wrong url?): ' + str(e)
             error['status'] = 'FATAL'
-        error['web_status'] = response.status_code
-        return request, error
-    except requests.exceptions.Timeout as e:
-        error['message'] = 'Got timeout when sending request: ' + str(e)
-        error['status'] = 'FATAL'
-        error['web_status'] = 408
-        return request, error
-    except requests.exceptions.RequestException as e:
-        error['message'] = 'Got unknown exception (Wrong url?): ' + str(e)
-        error['status'] = 'FATAL'
-        error['web_status'] = 520  # non-standard
-        return request, error
+            error['web_status'] = 520  # non-standard
+            return request, error
 
     # apparently, all when smoothly. Get the responses
     # DEBUG
