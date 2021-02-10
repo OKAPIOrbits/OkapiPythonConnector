@@ -2,7 +2,7 @@ import requests
 import json
 
 
-def okapi_send_request(okapi_login, request_body, url_endpoint):
+def okapi_send_request(okapi_login, request_body, url_endpoint, max_retries=3):
     # okapi_send_request() Send request to okapi platform
     #
     #   Inputs
@@ -31,9 +31,8 @@ def okapi_send_request(okapi_login, request_body, url_endpoint):
     error['web_status'] = 0
 
     url = okapi_login["url"] + url_endpoint
-    counter = 0
-    while(counter < 4):
-
+    retries = 1
+    while(retries <= max_retries):
         try:
             response = requests.post(url, data=json.dumps(request_body),
                                     headers=okapi_login['header'], timeout=5)
@@ -60,12 +59,12 @@ def okapi_send_request(okapi_login, request_body, url_endpoint):
             error['web_status'] = response.status_code
             return request, error
         except requests.exceptions.Timeout as e:
-            if(counter == 3):     
+            if(retries == max_retries):     
                 error['message'] = 'Got timeout when sending request: ' + str(e)
                 error['status'] = 'FATAL'
                 error['web_status'] = 408
                 return request, error
-            counter += 1
+            retries += 1
             continue 
         except requests.exceptions.RequestException as e:
             error['message'] = 'Got unknown exception (Wrong url?): ' + str(e)

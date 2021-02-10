@@ -2,7 +2,7 @@ import requests
 import time
 
 
-def okapi_init(url, username, password):
+def okapi_init(url, username, password, max_retries=3):
     # okapi_init() Performs the login and initialization. By default, all
     # possible scopes are requested.
     #
@@ -39,55 +39,60 @@ def okapi_init(url, username, password):
         "client_id": "jrk0ZTrTuApxUstXcXdu9r71IX5IeKD3",
     }
 
-    try:
-        url_auth = "https://okapi-development.eu.auth0.com/oauth/token"
-        okapi_login_token_response = requests.post(url_auth,
-                                                   data=request_token_payload,
-                                                   timeout=5)
-        okapi_login_token_response.raise_for_status()
-        okapi_login_token = okapi_login_token_response.json()
+    retries = 1
+    while(retries <= max_retries):
+        try:
+            url_auth = "https://okapi-development.eu.auth0.com/oauth/token"
+            okapi_login_token_response = requests.post(url_auth,
+                                                    data=request_token_payload,
+                                                    timeout=5)
+            okapi_login_token_response.raise_for_status()
+            okapi_login_token = okapi_login_token_response.json()
 
-        okapi_login = {
-            "token": okapi_login_token,
-            "url": url,
-            "accessTime": str(time.time()),
-            "header": {
-                "Content-Type": "application/json",
-                "Accept": "application/json",
-                #"access_token": okapi_login_token["access_token"], # Legacy
-                "Authorization": "Bearer " + okapi_login_token["access_token"],
-                "expires_in": str(okapi_login_token["expires_in"]),
-                "token_type": okapi_login_token["token_type"],
-                "scope": okapi_login_token["scope"]
+            okapi_login = {
+                "token": okapi_login_token,
+                "url": url,
+                "accessTime": str(time.time()),
+                "header": {
+                    "Content-Type": "application/json",
+                    "Accept": "application/json",
+                    #"access_token": okapi_login_token["access_token"], # Legacy
+                    "Authorization": "Bearer " + okapi_login_token["access_token"],
+                    "expires_in": str(okapi_login_token["expires_in"]),
+                    "token_type": okapi_login_token["token_type"],
+                    "scope": okapi_login_token["scope"]
+                }
             }
-        }
-
-    except requests.exceptions.HTTPError as err:
-        print(err)
-        # we now that 403 is probably wrong password:
-        if (okapi_login_token_response.status_code == 403):
-            response = okapi_login_token_response.json()
-            error['message'] = ('Got error from Auth0: ' + response['error'] +
-                                ': ' + response['error_description'])
+            break
+        except requests.exceptions.HTTPError as err:
+            print(err)
+            # we now that 403 is probably wrong password:
+            if (okapi_login_token_response.status_code == 403):
+                response = okapi_login_token_response.json()
+                error['message'] = ('Got error from Auth0: ' + response['error'] +
+                                    ': ' + response['error_description'])
+                error['status'] = 'FATAL'
+                error['web_status'] = okapi_login_token_response.status_code
+            else:
+                error['message'] = 'Got HTTP Error when sending request. '
+                error['status'] = 'FATAL'
+                error['web_status'] = okapi_login_token_response.status_code
+                print("Error occured: {}".format(err))
+            return okapi_login, error
+        except requests.exceptions.Timeout as err:
+            if(retries == max_retries):
+                print(err)
+                error['message'] = 'Got timeout when sending request. '
+                error['status'] = 'FATAL'
+                error['web_status'] = 408  # correct timeout?
+                return okapi_login, error
+            retries += 1
+            continue
+        except requests.exceptions.RequestException as err:
+            print(err)
+            error['message'] = 'Got unknown exception. '
             error['status'] = 'FATAL'
-            error['web_status'] = okapi_login_token_response.status_code
-        else:
-            error['message'] = 'Got HTTP Error when sending request. '
-            error['status'] = 'FATAL'
-            error['web_status'] = okapi_login_token_response.status_code
-            print("Error occured: {}".format(err))
-        return okapi_login, error
-    except requests.exceptions.Timeout as err:
-        print(err)
-        error['message'] = 'Got timeout when sending request. '
-        error['status'] = 'FATAL'
-        error['web_status'] = 408  # correct timeout?
-        return okapi_login, error
-    except requests.exceptions.RequestException as err:
-        print(err)
-        error['message'] = 'Got unknown exception. '
-        error['status'] = 'FATAL'
-        error['web_status'] = 520  # non-standard
-        return okapi_login, error
+            error['web_status'] = 520  # non-standard
+            return okapi_login, error
 
     return okapi_login, error

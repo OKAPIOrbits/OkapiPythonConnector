@@ -1,7 +1,6 @@
 
 
 import requests
-import time
 
 
 class Okapi:
@@ -30,46 +29,57 @@ class Okapi:
   #  if get_status_severity(source_status["type"]) > get_statu
 
 
-  def handle_rest_call(func, is_login_call = False):
+  def handle_rest_call(func, is_login_call = False, max_retries=3):
 
     connector_status = dict()
     connector_status["text"] = "All ok"
     connector_status["type"] = "NORMAL"
     connector_status["web_status"] = 0
+    
+    retries = 1
+    while(retries <= max_retries):
+      try:
+        response = func()
+        response.raise_for_status()
+        break
 
-    try:
-      response = func()
-      response.raise_for_status()
-
-    except requests.exceptions.HTTPError as err:
-      #print(err)
-      # we now that 403 is probably wrong password:
-      if (is_login_call and response.status_code == 403):
-        try:
-          connector_response = response.json()
-          connector_status['text'] = "Got error from Auth0: " \
-            + response['error'] + ': ' + response['error_description']
+      except requests.exceptions.HTTPError as err:
+        #print(err)
+        # we know that 403 is probably wrong password:
+        if (is_login_call and response.status_code == 403):
+          try:
+            connector_response = response.json()
+            connector_status['text'] = "Got error from Auth0: " \
+              + response['error'] + ': ' + response['error_description']
+            connector_status['type'] = 'FATAL'
+            connector_status['web_status'] = response.status_code
+            break
+          except:
+            #print("Could not convert response data to json")
+            connector_status['text'] = "Got unknown error from Auth0: " + str(err)
+            connector_status['type'] = 'FATAL'
+            connector_status['web_status'] = response.status_code
+            break
+        else:
+          connector_status['text'] = 'Got HTTPError when sending request: ' \
+            + str(err)
           connector_status['type'] = 'FATAL'
           connector_status['web_status'] = response.status_code
-        except:
-          #print("Could not convert response data to json")
-          connector_status['text'] = "Got unknown error from Auth0: " + str(err)
+          break
+      except requests.exceptions.Timeout as err:
+        if(retries == max_retries):
+          connector_status['text'] = 'Got timeout when sending request: ' + str(err)
           connector_status['type'] = 'FATAL'
-          connector_status['web_status'] = response.status_code
-      else:
-        connector_status['text'] = 'Got HTTPError when sending request: ' \
-          + str(err)
+          connector_status['web_status'] = 408
+        retries += 1
+        continue
+      except requests.exceptions.RequestException as err:
+        connector_status['text'] = 'Got unknown exception (Wrong url?).'
         connector_status['type'] = 'FATAL'
-        connector_status['web_status'] = response.status_code
-    except requests.exceptions.Timeout as err:
-      connector_status['text'] = 'Got timeout when sending request: ' + str(err)
-      connector_status['type'] = 'FATAL'
-      connector_status['web_status'] = 408
-    except requests.exceptions.RequestException as err:
-      connector_status['text'] = 'Got unknown exception (Wrong url?).'
-      connector_status['type'] = 'FATAL'
-      connector_status['web_status'] = 520  # non-standard
-      connector_status['error'] = err
+        connector_status['web_status'] = 520  # non-standard
+        connector_status['error'] = err
+        break
+      break
     
     connector_response = dict()
     try:
