@@ -1,5 +1,4 @@
 import requests
-import time
 
 def okapi_get_objects(okapi_login, url_endpoint, sub_id = '', max_retries=3):
     # okapi_get_objects() Get objects from an endpoint

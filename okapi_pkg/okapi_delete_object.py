@@ -1,6 +1,5 @@
 import requests
 import json
-import time
 
 def okapi_delete_object(okapi_login, object_to_delete, url_endpoint, max_retries):
     # okapi_add_object() Add (post) one object to the platform
