@@ -1,7 +1,8 @@
 import requests
 import json
 
-def okapi_delete_object(okapi_login, object_to_delete, url_endpoint, max_retries):
+
+def okapi_delete_object(okapi_login, object_to_delete, url_endpoint, max_retries=3):
     # okapi_add_object() Add (post) one object to the platform
     #
     #   Inputs
@@ -27,21 +28,22 @@ def okapi_delete_object(okapi_login, object_to_delete, url_endpoint, max_retries
     error['status'] = 'NONE'
     error['web_status'] = 0
 
-    if ("satellite_id" in object_to_delete):
+    if "satellite_id" in object_to_delete:
         url = okapi_login["url"] + url_endpoint + object_to_delete["satellite_id"]
-    elif ("conjunction_id" in object_to_delete):
+    elif "conjunction_id" in object_to_delete:
         url = okapi_login["url"] + url_endpoint + object_to_delete["conjunction_id"]
     else:
         error['message'] = 'Object to delete appears incomplete. Missing id.'
         error['status'] = 'FATAL'
         error['web_status'] = 204
-        return result, error
+        return response, error
 
     retries = 1
-    while(retries <= max_retries):
+    response_json = dict()
+    while retries <= max_retries:
         try:
             response = requests.delete(url, data=json.dumps(object_to_delete),
-                                    headers=okapi_login['header'], timeout=5)
+                                       headers=okapi_login['header'], timeout=5)
             # raise for status
             response.raise_for_status()
             break
@@ -52,7 +54,7 @@ def okapi_delete_object(okapi_login, object_to_delete, url_endpoint, max_retries
 
             # if we got a 500, we received an internal error.This we would like to
             # look at
-            if (response.status_code == 500):
+            if response.status_code == 500:
                 response_json = response.json()
                 status = response_json['state_msg']
                 error['message'] = status['text']
@@ -65,7 +67,7 @@ def okapi_delete_object(okapi_login, object_to_delete, url_endpoint, max_retries
             error['web_status'] = response.status_code
             return response_json, error
         except requests.exceptions.Timeout as e:
-            if(retries == max_retries):
+            if retries == max_retries:
                 error['message'] = 'Got timeout when sending request: ' + str(e)
                 error['status'] = 'FATAL'
                 error['web_status'] = 408
