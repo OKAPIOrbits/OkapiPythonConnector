@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="okapi-python-connector",
-    version="2020-12",
+    version="2021-02",
     author="Jonas Radtke",
     author_email="jonas@okapiorbits.space",
     description="Package to connect to OKAPI Api",
