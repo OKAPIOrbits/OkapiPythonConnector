@@ -319,7 +319,7 @@ all_satellites, error = okapi_get_objects(okapi_login, 'satellites')
 satellite_to_add = {
     "satellite_id": "550e8400-e29b-11d4-a716-446655440000",
     "name": "My testing satellite",
-    "norad_ids": ["124631"],
+    "norad_ids": [124631],
     "area": 1,
     "mass": 1,
     "thrust_uncertainty": 2,
