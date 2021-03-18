@@ -1,2 +1,6 @@
 __pycache__/
 venv/
+.idea/
+build/
+dist/
+okapi_python_connector.egg-info/
