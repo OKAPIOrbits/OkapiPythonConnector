@@ -1,11 +1,13 @@
-import requests
-import json
 # from okapi_init import okapi_init
 # from okapi_send_request import okapi_send_request
 # from okapi_get_result import okapi_get_result
 import time
 
+
 # this is a wrapper class that is supposed to wait for the result and return it automatically
+from . import okapi_get_result
+
+
 def okapi_wait_and_get_result(okapi_login, request_body, url_endpoint_results, max_poll_time):
     # okapi_wait_and_get_result() Send a request to the OKAPI Platform and wait for the results
     #
@@ -26,20 +28,21 @@ def okapi_wait_and_get_result(okapi_login, request_body, url_endpoint_results, m
 
     # Wait the specified time for the result. max_poll_time makes sure that we cannot get stuck
     counter = 0
+    result = dict()
     error = dict()
     error['message'] = 'NONE'
     error['status'] = 'NONE'
     error['web_status'] = 202
     while (counter < int(max_poll_time)) and (error['web_status'] == 202):
 
-    # get the results from the request
+        # get the results from the request
         result, error = okapi_get_result(
             okapi_login, request_body,
             url_endpoint_results)
-        if (error['status'] == 'FATAL'):
+        if error['status'] == 'FATAL':
             print(error)
             exit()
-        elif(error['status'] == 'WARNING'):
+        elif error['status'] == 'WARNING':
             print(error)
 
         # we wait a second, to not trigger some DOD on the server ;-)

@@ -32,10 +32,10 @@ def okapi_send_request(okapi_login, request_body, url_endpoint, max_retries=3):
 
     url = okapi_login["url"] + url_endpoint
     retries = 1
-    while(retries <= max_retries):
+    while retries <= max_retries:
         try:
             response = requests.post(url, data=json.dumps(request_body),
-                                    headers=okapi_login['header'], timeout=5)
+                                     headers=okapi_login['header'], timeout=5)
             # raise for status
             response.raise_for_status()
             break
@@ -46,7 +46,7 @@ def okapi_send_request(okapi_login, request_body, url_endpoint, max_retries=3):
 
             # if we got a 500, we received an internal error.This we would like to
             # look at
-            if (response.status_code == 500):
+            if response.status_code == 500:
                 response_json = response.json()
                 status = response_json['state_msg']
                 error['message'] = status['text']
@@ -59,13 +59,13 @@ def okapi_send_request(okapi_login, request_body, url_endpoint, max_retries=3):
             error['web_status'] = response.status_code
             return request, error
         except requests.exceptions.Timeout as e:
-            if(retries == max_retries):     
+            if retries == max_retries:
                 error['message'] = 'Got timeout when sending request: ' + str(e)
                 error['status'] = 'FATAL'
                 error['web_status'] = 408
                 return request, error
             retries += 1
-            continue 
+            continue
         except requests.exceptions.RequestException as e:
             error['message'] = 'Got unknown exception (Wrong url?): ' + str(e)
             error['status'] = 'FATAL'
@@ -78,7 +78,7 @@ def okapi_send_request(okapi_login, request_body, url_endpoint, max_retries=3):
     response_json = response.json()
 
     # fill error
-    status = response_json['status']   # state_msg = response_json['state_msg']
+    status = response_json['status']  # state_msg = response_json['state_msg']
     error['message'] = status['text']
     error['status'] = status['type']
     error['web_status'] = response.status_code

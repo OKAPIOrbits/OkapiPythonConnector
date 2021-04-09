@@ -40,12 +40,12 @@ def okapi_init(url, username, password, max_retries=3):
     }
 
     retries = 1
-    while(retries <= max_retries):
+    while retries <= max_retries:
         try:
             url_auth = "https://okapi-development.eu.auth0.com/oauth/token"
             okapi_login_token_response = requests.post(url_auth,
-                                                    data=request_token_payload,
-                                                    timeout=5)
+                                                       data=request_token_payload,
+                                                       timeout=5)
             okapi_login_token_response.raise_for_status()
             okapi_login_token = okapi_login_token_response.json()
 
@@ -56,7 +56,7 @@ def okapi_init(url, username, password, max_retries=3):
                 "header": {
                     "Content-Type": "application/json",
                     "Accept": "application/json",
-                    #"access_token": okapi_login_token["access_token"], # Legacy
+                    # "access_token": okapi_login_token["access_token"], # Legacy
                     "Authorization": "Bearer " + okapi_login_token["access_token"],
                     "expires_in": str(okapi_login_token["expires_in"]),
                     "token_type": okapi_login_token["token_type"],
@@ -67,7 +67,7 @@ def okapi_init(url, username, password, max_retries=3):
         except requests.exceptions.HTTPError as err:
             print(err)
             # we now that 403 is probably wrong password:
-            if (okapi_login_token_response.status_code == 403):
+            if okapi_login_token_response.status_code == 403:
                 response = okapi_login_token_response.json()
                 error['message'] = ('Got error from Auth0: ' + response['error'] +
                                     ': ' + response['error_description'])
@@ -80,7 +80,7 @@ def okapi_init(url, username, password, max_retries=3):
                 print("Error occured: {}".format(err))
             return okapi_login, error
         except requests.exceptions.Timeout as err:
-            if(retries == max_retries):
+            if retries == max_retries:
                 print(err)
                 error['message'] = 'Got timeout when sending request. '
                 error['status'] = 'FATAL'

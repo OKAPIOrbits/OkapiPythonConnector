@@ -8,16 +8,16 @@ from okapi_pkg import *
 # Init --> Get a token to run the analyses
 #
 # For auth info: See www.okapiorbits.space or contact us. Standard url is: https://api.okapiorbits.com/
-okapi_login, error = okapi_init(  "https://api.okapiorbits.com/",
-                                 <username as string>,
-                                 <password as string>)
+okapi_login, error = okapi_init("https://api.okapiorbits.com/",
+                                <username as string>,
+                                <password as string>)
 
 print("OkapiLogin: {}".format(okapi_login))
 # check for the error status
-if (error['status'] == 'FATAL'):
+if error['status'] == 'FATAL':
     print(error)
-    exit('Error during authentification.')
-elif(error['status'] == 'WARNING'):
+    exit('Error during authentication.')
+elif error['status'] == 'WARNING':
     print(error)
 # print(okapi_login)
 
@@ -66,10 +66,10 @@ request_sgp4, error = okapi_send_request(okapi_login, pass_pred_request_body,
 # DEBUG
 # print("RequestSGP4: {}".format(request_sgp4))
 # print("RequestError: {}".format(error))
-if (error['status'] == 'FATAL'):
+if error['status'] == 'FATAL':
     print(error)
     exit()
-elif(error['status'] == 'WARNING'):
+elif error['status'] == 'WARNING':
     print(error)
 # print(request_sgp4)
 
@@ -85,10 +85,10 @@ time.sleep(15)
 print("Getting pass predictions SGP4 result")
 result_sgp4, error = okapi_get_result(okapi_login, request_sgp4,
                                       'predict-passes/sgp4/results/{}/simple')
-if (error['status'] == 'FATAL'):
+if error['status'] == 'FATAL':
     print(error)
     exit()
-elif(error['status'] == 'WARNING'):
+elif error['status'] == 'WARNING':
     print(error)
 # print(result_sgp4)
 
@@ -101,40 +101,39 @@ elif(error['status'] == 'WARNING'):
 # is optional. The values stated are identical to the standard.
 propagate_neptune_simple_request_body = {
     "orbit":
-    {
-        "type": "state.json",
-        "content":
         {
-            "area": 1,
-            "mass": 1,
-            "x": 615.119526,
-            "y": -7095.644839,
-            "z": -678.668352,
-            "x_dot": 0.390367,
-            "y_dot": 0.741902,
-            "z_dot": -7.39698,
-            "epoch": "2016-07-21T00:31:50.000Z"
-        }
-    },
+            "type": "state.json",
+            "content":
+                {
+                    "area": 1,
+                    "mass": 1,
+                    "x": 615.119526,
+                    "y": -7095.644839,
+                    "z": -678.668352,
+                    "x_dot": 0.390367,
+                    "y_dot": 0.741902,
+                    "z_dot": -7.39698,
+                    "epoch": "2016-07-21T00:31:50.000Z"
+                }
+        },
     "settings": {
         "type": "prop_settings.json",
         "content":
-        {
-            "propagation_end_epoch": "2016-07-23T00:31:50.000Z",
-        }
+            {
+                "propagation_end_epoch": "2016-07-23T00:31:50.000Z",
+            }
     }
 }
-
 
 # send the simple request to the server
 request_neptune_simple, error = okapi_send_request(
     okapi_login,
     propagate_neptune_simple_request_body,
     'propagate-orbit/neptune/requests')
-if (error['status'] == 'FATAL'):
+if error['status'] == 'FATAL':
     print(error)
     exit()
-elif(error['status'] == 'WARNING'):
+elif error['status'] == 'WARNING':
     print(error)
 # print(request_neptune_simple)
 
@@ -146,10 +145,10 @@ time.sleep(25)
 print("Getting OEM result")
 result_oem, error = okapi_get_result(okapi_login, request_neptune_simple,
                                      'propagate-orbit/neptune/results/{}/oem')
-if (error['status'] == 'FATAL'):
+if error['status'] == 'FATAL':
     print(error)
     exit()
-elif(error['status'] == 'WARNING'):
+elif error['status'] == 'WARNING':
     print(error)
 # print(result_oem)
 
@@ -157,10 +156,10 @@ elif(error['status'] == 'WARNING'):
 print("Getting OPM result")
 result_opm, error = okapi_get_result(okapi_login, request_neptune_simple,
                                      'propagate-orbit/neptune/results/{}/opm')
-if (error['status'] == 'FATAL'):
+if error['status'] == 'FATAL':
     print(error)
     exit()
-elif(error['status'] == 'WARNING'):
+elif error['status'] == 'WARNING':
     print(error)
 # print(result_opm)
 
@@ -209,16 +208,15 @@ propagate_neptune_opm_request_body = {
     }
 }
 
-
 # # send the opm request to the server
 request_neptune_opm, error = okapi_send_request(
     okapi_login,
     propagate_neptune_opm_request_body,
     'propagate-orbit/neptune/requests')
-if (error['status'] == 'FATAL'):
+if error['status'] == 'FATAL':
     print(error)
     exit()
-elif(error['status'] == 'WARNING'):
+elif error['status'] == 'WARNING':
     print(error)
 # print(request_neptune_opm)
 
@@ -235,19 +233,19 @@ while (counter < 50) and (error['web_status'] == 202):
     result_simple, error = okapi_get_result(
         okapi_login, request_neptune_opm,
         'propagate-orbit/neptune/results/{}/simple')
-    if (error['status'] == 'FATAL'):
+    if error['status'] == 'FATAL':
         print(error)
         exit()
-    elif(error['status'] == 'WARNING'):
+    elif error['status'] == 'WARNING':
         print(error)
-    #print(result_simple)
+    # print(result_simple)
 
     # we wait a second, to not trigger some DOD on the server ;-)
     time.sleep(1)
 
     counter += 1
 
-print("resultopm: {}".format(result_simple))
+# print("resultopm: {}".format(result_simple))
 #
 # Propagation: SGP4
 #
@@ -273,7 +271,7 @@ request_neptune_opm, error = okapi_send_request(
     okapi_login,
     propagate_sgp4_request_body,
     'propagate-orbit/sgp4/requests')
-if (error['status'] == 'FATAL'):
+if error['status'] == 'FATAL':
     print(error)
     exit()
 # print(request_neptune_opm)
@@ -285,10 +283,10 @@ time.sleep(2)
 print("Getting simple result")
 result_simple, error = okapi_get_result(
     okapi_login, request_neptune_opm, 'propagate-orbit/sgp4/results/{}/simple')
-if (error['status'] == 'FATAL'):
+if error['status'] == 'FATAL':
     print(error)
     exit()
-elif(error['status'] == 'WARNING'):
+elif error['status'] == 'WARNING':
     print(error)
 # print(result_simple)
 
@@ -296,13 +294,12 @@ elif(error['status'] == 'WARNING'):
 print("Getting OMM result")
 result_simple, error = okapi_get_result(
     okapi_login, request_neptune_opm, 'propagate-orbit/sgp4/results/{}/omm')
-if (error['status'] == 'FATAL'):
+if error['status'] == 'FATAL':
     print(error)
     exit()
-elif(error['status'] == 'WARNING'):
+elif error['status'] == 'WARNING':
     print(error)
 # print(result_simple)
-
 
 
 # Examples on how to get, modify, set, and delete objects in the platform
@@ -319,7 +316,7 @@ all_satellites, error = okapi_get_objects(okapi_login, 'satellites')
 satellite_to_add = {
     "satellite_id": "550e8400-e29b-11d4-a716-446655440000",
     "name": "My testing satellite",
-    "norad_ids": [124631],
+    "norad_ids": [1234567],
     "area": 1,
     "mass": 1,
     "thrust_uncertainty": 2,
@@ -340,10 +337,12 @@ satellite_to_add = {
 }
 
 added_satellite, error = okapi_add_object(okapi_login, satellite_to_add,
-                                         'satellites')
-if (error.get('status','') == 'FATAL'):
+                                          'satellites')
+if error.get('status', '') == 'FATAL':
     print(error)
     exit()
+
+# print(added_satellite)
 
 #
 # Modify a satellite.
@@ -353,7 +352,7 @@ object_to_modify["name"] = "my dog, the other satellite"
 
 added_satellite, error = okapi_change_object(okapi_login, object_to_modify,
                                              'satellites/')
-if (error.get('status','') == 'FATAL'):
+if error.get('status', '') == 'FATAL':
     print(error)
     exit()
 
@@ -361,7 +360,7 @@ if (error.get('status','') == 'FATAL'):
 # Delete a satellite
 #
 deleted_satellite, error = okapi_delete_object(okapi_login, added_satellite,
-                                             'satellites/')
-if (error.get('status','') == 'FATAL'):
+                                               'satellites/')
+if error.get('status', '') == 'FATAL':
     print(error)
     exit()
