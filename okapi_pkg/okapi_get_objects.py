@@ -1,6 +1,7 @@
 import requests
 
-def okapi_get_objects(okapi_login, url_endpoint, sub_id = '', max_retries=3):
+
+def okapi_get_objects(okapi_login, url_endpoint, sub_id='', max_retries=3):
     # okapi_get_objects() Get objects from an endpoint
     #
     #   Inputs
@@ -23,21 +24,21 @@ def okapi_get_objects(okapi_login, url_endpoint, sub_id = '', max_retries=3):
     #
 
     # init
+    response = dict()
     result = dict()
-    result_dict = dict()
     error = dict()
     error['message'] = 'NONE'
     error['status'] = 'NONE'
     error['web_status'] = 0
 
     # check what kind of object is requested
-    if (sub_id == ''):
+    if sub_id == '':
         url = okapi_login["url"] + url_endpoint
     else:
         url = okapi_login["url"] + url_endpoint.format(sub_id)
 
     retries = 1
-    while(retries <= max_retries):
+    while retries <= max_retries:
         try:
             result["service"] = url_endpoint
             response = requests.get(url, headers=okapi_login["header"], timeout=5)
@@ -51,7 +52,7 @@ def okapi_get_objects(okapi_login, url_endpoint, sub_id = '', max_retries=3):
 
             # Get the state msgs and stuff
             current_result_dict = result
-            if ('status' in current_result_dict):
+            if 'status' in current_result_dict:
                 state_msg = current_result_dict['status']
                 error['status'] = state_msg['type']
                 error['message'] = state_msg['text']
@@ -60,7 +61,7 @@ def okapi_get_objects(okapi_login, url_endpoint, sub_id = '', max_retries=3):
 
             # Finally: Check, if status is 202 which means "results might not be
             # complete"
-            if ((response.status_code == 202) and (error['status'] != 'FATAL')):
+            if (response.status_code == 202) and (error['status'] != 'FATAL'):
                 error['status'] = 'WARNING'
                 error['message'] = 'Result has been accepted but not been fully processed yet.'
 
@@ -77,11 +78,11 @@ def okapi_get_objects(okapi_login, url_endpoint, sub_id = '', max_retries=3):
                 result = dict()
                 result_dict = dict()
 
-            if ('state_msg' in result_dict):
+            if 'state_msg' in result_dict:
                 state_msg = result_dict['state_msg']
                 error['status'] = state_msg['type']
                 error['message'] = state_msg['text']
-            elif('state_msgs' in result_dict):
+            elif 'state_msgs' in result_dict:
                 result_dict = result[1]
                 state_msgs = result_dict['state_msgs']
 
@@ -92,7 +93,7 @@ def okapi_get_objects(okapi_login, url_endpoint, sub_id = '', max_retries=3):
             error['web_status'] = response.status_code
             return result, error
         except requests.exceptions.Timeout:
-            if(retries == max_retries):
+            if retries == max_retries:
                 error['message'] = 'Got timeout when sending request. '
                 error['status'] = 'FATAL'
                 error['web_status'] = 408

@@ -1,6 +1,7 @@
 import requests
 import json
 
+
 def okapi_change_object(okapi_login, object_to_change, url_endpoint, max_retries=3):
     # okapi_change_object() Change (put) one object to the platform
     #
@@ -23,6 +24,7 @@ def okapi_change_object(okapi_login, object_to_change, url_endpoint, max_retries
     # init
     response = dict()
     error = dict()
+    response_json = dict()
     error['message'] = 'NONE'
     error['status'] = 'NONE'
     error['web_status'] = 0
@@ -30,7 +32,7 @@ def okapi_change_object(okapi_login, object_to_change, url_endpoint, max_retries
     url = okapi_login["url"] + url_endpoint + object_to_change["satellite_id"]
 
     retries = 1
-    while(retries <= max_retries):
+    while retries <= max_retries:
 
         try:
             response = requests.put(url, data=json.dumps(object_to_change),
@@ -45,7 +47,7 @@ def okapi_change_object(okapi_login, object_to_change, url_endpoint, max_retries
 
             # if we got a 500, we received an internal error.This we would like to
             # look at
-            if (response.status_code == 500):
+            if response.status_code == 500:
                 response_json = response.json()
                 status = response_json['state_msg']
                 error['message'] = status['text']
@@ -58,7 +60,7 @@ def okapi_change_object(okapi_login, object_to_change, url_endpoint, max_retries
             error['web_status'] = response.status_code
             return response_json, error
         except requests.exceptions.Timeout as e:
-            if(retries == max_retries):
+            if retries == max_retries:
                 error['message'] = 'Got timeout when sending request: ' + str(e)
                 error['status'] = 'FATAL'
                 error['web_status'] = 408
