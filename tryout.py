@@ -1,16 +1,19 @@
 #!/usr/bin/python
-
+import os
 import time
-
 from okapi_pkg import *
 
 #
 # Init --> Get a token to run the analyses
 #
-# For auth info: See www.okapiorbits.space or contact us. Standard url is: https://api.okapiorbits.com/
+# For auth info: See https://okapiorbits.space/documentation/ or contact us.
+# Standard url is: https://api.okapiorbits.com/
+username = os.getenv("OKAPI_USERNAME")
+password = os.getenv("OKAPI_PASSWORD")
+# You can either load the username and password from the environment or simply hardcode them here for testing purposes
 okapi_login, error = okapi_init("https://api.okapiorbits.com/",
-                                <username as string>,
-                                <password as string>)
+                                username,
+                                password)
 
 print("OkapiLogin: {}".format(okapi_login))
 # check for the error status
@@ -307,6 +310,9 @@ elif error['status'] == 'WARNING':
 # Get satellites (might be empty)
 #
 all_satellites, error = okapi_get_objects(okapi_login, 'satellites')
+if error.get('status', '') == 'FATAL':
+    print(error)
+    exit()
 
 # print(all_satellites)
 
