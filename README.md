@@ -1,14 +1,13 @@
-OkapiPythonConnector
-====
-
+# OkapiPythonConnector
 Some routines to connect OKAPI:Orbits software with python.
 
-Dependencies:
+See okapi_pkg/tryout.py
 
-* python3
-* Python modules "requests"
+For more information, go to https://www.okapiorbits.space/documentation
 
-Example: See okapi_pkg/tryout.py
+Checkout the API at https://okapiorbits.space/api-redoc/
 
-For more information, go to www.okapiorbits.space/documentation
- 
+## Dependencies:
+* python 3.8+
+* requests
+
