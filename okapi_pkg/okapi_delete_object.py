@@ -37,7 +37,6 @@ def okapi_delete_object(okapi_login, object_to_delete, url_endpoint, max_retries
         error['web_status'] = 204
         return response, error
 
-    print(url)
     retries = 1
     response_json = dict()
     while retries <= max_retries:
