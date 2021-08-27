@@ -1,7 +1,10 @@
 import os
-
 import pytest
-from okapi_pkg import okapi_init, okapi_get_objects, okapi_add_object, okapi_delete_object, okapi_change_object
+from okapi_pkg.okapi_init import okapi_init
+from okapi_pkg.okapi_get_objects import okapi_get_objects
+from okapi_pkg.okapi_add_object import okapi_add_object
+from okapi_pkg.okapi_delete_object import okapi_delete_object
+from okapi_pkg.okapi_change_object import okapi_change_object
 
 
 @pytest.fixture(scope="module")
