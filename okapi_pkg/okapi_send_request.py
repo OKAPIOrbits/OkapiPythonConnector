@@ -3,24 +3,17 @@ import json
 
 
 def okapi_send_request(okapi_login, request_body, url_endpoint, max_retries=3):
-    # okapi_send_request() Send request to okapi platform
-    #
-    #   Inputs
-    #       okapi_login - Dict, containing at least URL, options and Token for
-    #       okapi. Can be obtained using OkapiInit().
-    #       request_body - The body of the request (thus: the message).
-    #       url_endpoint - the url, where-to send the request
-    #
-    #   Outputs
-    #       request - dict containing the request_id needed to identify the
-    #                 result on OKAPI servers.
-    #       error - Dict containing error information. Always check
-    #               error['status'] If it is 'FATAL' something went very wrong,
-    #               'WARNING's are less critical and 'NONE' or 'INFO' are no
-    #               concern. error['message'] gives some explanation on the
-    #               status, error['web_status'] gives the http response.
-
-    # check the type that is requested
+    """
+    Send request to OKAPI API
+    :param okapi_login: dict containing at least URL, options and token for OKAPI. Can be obtained using okapi_init().
+    :param request_body: dict containing details of the request e.g. orbit, propagation settings etc.
+    :param url_endpoint: the url where-to send the request
+    :param max_retries: number of times to repeat the get request, when the backend does not respond in time
+    :return request: dict containing the request_id needed to identify the result on OKAPI servers.
+    :return error: dict containing error information. Always check error['status'] If it is 'FATAL' something went very
+    wrong, WARNING's are less critical and 'NONE' or 'INFO' are no concern. error['message'] gives some explanation on
+    the status, error['web_status'] gives the http response.
+    """
 
     # init
     request = dict()
@@ -30,7 +23,7 @@ def okapi_send_request(okapi_login, request_body, url_endpoint, max_retries=3):
     error['status'] = 'NONE'
     error['web_status'] = 0
 
-    url = okapi_login["url"] + url_endpoint
+    url = "/".join(map(lambda x: str(x).rstrip('/'), [okapi_login["url"], url_endpoint]))
     retries = 1
     while retries <= max_retries:
         try:

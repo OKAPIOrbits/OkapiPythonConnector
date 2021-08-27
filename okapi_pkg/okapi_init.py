@@ -63,6 +63,8 @@ def okapi_init(url, username, password, max_retries=3):
                     "scope": okapi_login_token["scope"]
                 }
             }
+            error['status'] = 'OK'
+            error['web_status'] = okapi_login_token_response.status_code
             break
         except requests.exceptions.HTTPError as err:
             print(err)

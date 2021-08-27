@@ -1,0 +1,4 @@
+requests~=2.25.0
+pytest~=6.2.2
+setuptools~=49.2.1
+python-dotenv~=0.17.1

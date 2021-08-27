@@ -1,18 +1,18 @@
-import setuptools
+from setuptools import setup, find_packages
 
 with open("README.md", "r") as fh:
     long_description = fh.read()
 
-setuptools.setup(
+setup(
     name="okapi-python-connector",
-    version="2021-02",
+    version="2021-08",
     author="Jonas Radtke",
     author_email="jonas@okapiorbits.space",
-    description="Package to connect to OKAPI Api",
+    description="Package to connect to OKAPI API",
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="https://github.com/OKAPIOrbits/OkapiPythonConnector",
-    packages=setuptools.find_packages(),
+    packages=find_packages(),
     install_requires=[
         'requests'
     ],

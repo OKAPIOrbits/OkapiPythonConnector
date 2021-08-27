@@ -1,27 +1,27 @@
+from urllib.parse import urljoin
+
 import requests
 
 
 def okapi_get_objects(okapi_login, url_endpoint, sub_id='', max_retries=3):
-    # okapi_get_objects() Get objects from an endpoint
-    #
-    #   Inputs
-    #       okapi_login - Dict, containing at least URL, options and Token for
-    #       OKAPI. Can be obtained using OkapiInit().
-    #       url_endpoint - adress, from which the results shall be retrieved
-    #
-    #   Outputs
-    #       results - dict, containing the results from the request
-    #       error - Dict containing error information. Always check
-    #               error['status'] If it is 'FATAL' something went very wrong,
-    #               'WARNING's are less critical and 'NONE' or 'INFO' are no
-    #               concern. error['message'] gives some explanation on the
-    #               status, error['web_states'] gives the http response.
-    #   Examples
-    #      Get all conjunctions for one user
-    #       conjunctions, error = okapi_get_objects(okapi_login,'conjunctions')
-    #      Get all CDMs for the first conjunction of conjunctions
-    #       cdms, error = okapi_get_objects(okapi_login,'conjunctions/{}/cdms',conjunctions["elements"][0]["conjunction_id"])
-    #
+    """
+    Get objects from an endpoint
+    :param okapi_login: dict containing at least URL, options and token for OKAPI. Can be obtained using okapi_init().
+    :param url_endpoint: address from which the results shall be retrieved, e.g. satellites, conjunctions, cdms
+    :param sub_id: refers to the id of an object, e.g. a satellite_id, which looks like
+    'c8f4aed5-cf7d-4a48-881e-50f0a6770a2b'
+    :param max_retries: number of times to repeat the get request, when the backend does not respond in time
+    :return results: dict containing the results from the request
+    :return error: dict containing error information. Always check error['status'] If it is 'FATAL' something went very
+    wrong, WARNING's are less critical and 'NONE' or 'INFO' are no concern. error['message'] gives some explanation on
+    the status, error['web_status'] gives the http response.
+
+    Examples:
+    Get all conjunctions for one user
+      conjunctions, error = okapi_get_objects(okapi_login,'conjunctions')
+    Get all CDMs for the first conjunction of conjunctions
+       cdms, error = okapi_get_objects(okapi_login,'conjunctions/{}/cdms',conjunctions["elements"][0]["conjunction_id"])
+    """
 
     # init
     response = dict()
@@ -33,9 +33,9 @@ def okapi_get_objects(okapi_login, url_endpoint, sub_id='', max_retries=3):
 
     # check what kind of object is requested
     if sub_id == '':
-        url = okapi_login["url"] + url_endpoint
+        url = urljoin(okapi_login["url"], url_endpoint)
     else:
-        url = okapi_login["url"] + url_endpoint.format(sub_id)
+        url = urljoin(okapi_login["url"], url_endpoint.format(sub_id))
 
     retries = 1
     while retries <= max_retries:
