@@ -5,9 +5,9 @@ name: Python application
 
 on:
   push:
-    branches: [ master, chk/mariner_release ]
+    branches: [ master ]
   pull_request:
-    branches: [ master, chk/mariner_release ]
+    branches: [ master ]
 
 jobs:
   build:
