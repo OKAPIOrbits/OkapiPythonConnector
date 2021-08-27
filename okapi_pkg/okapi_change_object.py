@@ -3,23 +3,21 @@ import json
 
 
 def okapi_change_object(okapi_login, object_to_change, url_endpoint, max_retries=3):
-    # okapi_change_object() Change (put) one object to the platform
-    #
-    #   Inputs
-    #       okapi_login - Dict, containing at least URL, options and Token for
-    #       okapi. Can be obtained using OkapiInit().
-    #       object_to_change - The object to be changed (eg. satellite) including all values (thus: the message).
-    #       url_endpoint - the url, where-to send the request
-    #
-    #   Outputs
-    #       response_json - dict containing the changed object, if successful. Else empty
-    #       error - Dict containing error information. Always check
-    #               error['status'] If it is 'FATAL' something went very wrong,
-    #               'WARNING's are less critical and 'NONE' or 'INFO' are no
-    #               concern. error['message'] gives some explanation on the
-    #               status, error['web_status'] gives the http response.
+    """
+    Change (put) one object to the platform
+    :param okapi_login: dict containing at least URL, options and token for OKAPI. Can be obtained using okapi_init().
+    :param object_to_change: the object (= satellite) to be modified. Note the dict must contain the key: 'satellite_id'.
+    :param url_endpoint: the sub url, where to send the request, e.g. satellites
+    :param max_retries: number of times to repeat the get request, when the backend does not respond in time
+    :return results: dict containing the results from the request
+    :return error: dict containing error information. Always check error['status'] If it is 'FATAL' something went very
+    wrong, WARNING's are less critical and 'NONE' or 'INFO' are no concern. error['message'] gives some explanation on
+    the status, error['web_status'] gives the http response.
 
-    # check the type that is requested
+    Example:
+    satellite_to_modify["area"] = 0.01
+    added_satellite, error = okapi_change_object(okapi_login, satellite_to_modify, 'satellites')
+    """
 
     # init
     response = dict()
@@ -29,7 +27,7 @@ def okapi_change_object(okapi_login, object_to_change, url_endpoint, max_retries
     error['status'] = 'NONE'
     error['web_status'] = 0
 
-    url = okapi_login["url"] + url_endpoint + object_to_change["satellite_id"]
+    url = "/".join(map(lambda x: str(x).rstrip('/'), [okapi_login["url"], url_endpoint, object_to_change["satellite_id"]]))
 
     retries = 1
     while retries <= max_retries:

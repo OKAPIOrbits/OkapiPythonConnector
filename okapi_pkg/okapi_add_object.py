@@ -3,23 +3,43 @@ import json
 
 
 def okapi_add_object(okapi_login, object_to_add, url_endpoint, max_retries=3):
-    # okapi_add_object() Add (post) one object to the platform
-    #
-    #   Inputs
-    #       okapi_login - Dict, containing at least URL, options and Token for
-    #       okapi. Can be obtained using OkapiInit().
-    #       object_to_add - The object (eg. satellite) to be added (thus: the message).
-    #       url_endpoint - the url, where-to send the request
-    #
-    #   Outputs
-    #       response_json - dict containing the added object, if successful. Else empty
-    #       error - Dict containing error information. Always check
-    #               error['status'] If it is 'FATAL' something went very wrong,
-    #               'WARNING's are less critical and 'NONE' or 'INFO' are no
-    #               concern. error['message'] gives some explanation on the
-    #               status, error['web_status'] gives the http response.
+    """
+    Add (post) one object to the platform
+    :param okapi_login: dict containing at least URL, options and token for OKAPI. Can be obtained using okapi_init().
+    :param object_to_add: the object (e.g. satellite as JSON dict) to be added
+    :param url_endpoint: the sub url, where to send the request, e.g. satellites
+    :param max_retries:
+    :return results: dict containing the results from the request
+    :return error: dict containing error information. Always check error['status'] If it is 'FATAL' something went very
+    wrong, WARNING's are less critical and 'NONE' or 'INFO' are no concern. error['message'] gives some explanation on
+    the status, error['web_status'] gives the http response.
 
-    # check the type that is requested
+    Example:
+    satellite_to_add = {
+        "satellite_id": "550e8400-e29b-11d4-a716-446655440000",
+        "name": "My testing satellite",
+        "norad_ids": [1234567],
+        "area": 1,
+        "mass": 1,
+        "thrust_uncertainty": 2,
+        "thrust_pointing_uncertainty": 2,
+        "thrust_output": 1.1e-8,
+        "propulsion_type": "continuous",
+        "accepted_collision_probability": 0.0001,
+        "accepted_minimum_distance": 100,
+        "use_ai_risk_prediction": False,
+        "space_track_status": "satellite_registered",
+        "space_track_status_other": "string",
+        "space_track_company_name": "OKAPI:Orbits GmbH",
+        "space_track_poc_name": "Max Musterman",
+        "space_track_poc_address": "Examplestreet 32, 34562 Examplecity, Germany",
+        "space_track_login": "example@someprovider.com",
+        "active": True,
+        "maneuver_strategy": "short_term_and_long_term"
+    }
+
+    added_satellite, error = okapi_add_object(okapi_login, satellite_to_add, 'satellites')
+    """
 
     # init
     response = dict()
@@ -29,7 +49,7 @@ def okapi_add_object(okapi_login, object_to_add, url_endpoint, max_retries=3):
     error['status'] = 'NONE'
     error['web_status'] = 0
 
-    url = okapi_login["url"] + url_endpoint
+    url = "/".join(map(lambda x: str(x).rstrip('/'), [okapi_login["url"], url_endpoint]))
 
     retries = 1
     while retries <= max_retries:
