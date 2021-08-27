@@ -8,6 +8,8 @@ def test_token():
     test_url = os.getenv("OKAPI_TEST_URL")
     test_username = os.getenv("OKAPI_TEST_USERNAME")
     test_password = os.getenv("OKAPI_TEST_PASSWORD")
+    print("Using API: ".format(test_username))
+    print("Username: ".format(test_url))
     okapi_login, error = okapi_init(test_url,
                                     test_username,
                                     test_password)
