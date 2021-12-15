@@ -73,3 +73,4 @@ jobs:
         OKAPI_TEST_PASSWORD: ${{ secrets.OKAPI_TEST_PASSWORD }}
       run: |
         pytest
+        python tryout.py
