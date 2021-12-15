@@ -9,8 +9,8 @@ from okapi_pkg import *
 # For auth info: See https://okapiorbits.space/documentation/ or contact us.
 # Standard url is: https://api.okapiorbits.com/
 load_dotenv()
-username = os.getenv("OKAPI_USERNAME")
-password = os.getenv("OKAPI_PASSWORD")
+username = os.getenv("OKAPI_TEST_USERNAME")
+password = os.getenv("OKAPI_TEST_PASSWORD")
 # You can either load the username and password from the environment or a .env file or
 # simply hardcode them here for testing purposes.
 okapi_login, error = okapi_init("https://api.okapiorbits.com/",
