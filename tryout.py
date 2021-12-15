@@ -13,7 +13,8 @@ username = os.getenv("OKAPI_TEST_USERNAME")
 password = os.getenv("OKAPI_TEST_PASSWORD")
 # You can either load the username and password from the environment or a .env file or
 # simply hardcode them here for testing purposes.
-okapi_login, error = okapi_init("https://api.okapiorbits.com/",
+url = os.getenv("OKAPI_TEST_URL") # "https://api.okapiorbits.com/"
+okapi_login, error = okapi_init(,
                                 username,
                                 password)
 
