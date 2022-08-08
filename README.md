@@ -12,7 +12,7 @@ See `tryout.py` for example calls. To get started create a `.env` file and add y
 OKAPI_USERNAME=your_username
 OKAPI_PASSWORD=your_password
 ```
-You can create the username and password on https://okapiorbits.com/signup
+To create an account, contact us at contact@okapiorbits.com
 
 For more information, go to https://www.okapiorbits.space/documentation
 
