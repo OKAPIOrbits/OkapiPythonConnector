@@ -5,9 +5,9 @@ from okapi_pkg import okapi_init, okapi_get_objects, okapi_add_object, okapi_del
 
 @pytest.fixture(scope="module")
 def test_token():
-    test_url = os.environ['OKAPI_TEST_URL']
-    test_username = os.environ['OKAPI_TEST_USERNAME']
-    test_password = os.environ['OKAPI_TEST_PASSWORD']
+    test_url = os.environ['OKAPI_URL']
+    test_username = os.environ['OKAPI_USERNAME']
+    test_password = os.environ['OKAPI_PASSWORD']
     okapi_login, error = okapi_init(test_url,
                                     test_username,
                                     test_password)
