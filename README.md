@@ -30,9 +30,9 @@ Install Python3.8 e.g. from Windows Store. Next, install required packages:<br>
 
 See `tryout.py` for example calls. To get started create a `.env` file and add your username and password:
 ```buildoutcfg
-OKAPI_URL=https://api.okapiorbits.com/
-OKAPI_USERNAME=your_username
-OKAPI_PASSWORD=your_password
+OKAPI_TEST_URL=https://api.okapiorbits.com/
+OKAPI_TEST_USERNAME=your_username
+OKAPI_TEST_PASSWORD=your_password
 ```
 Make sure that the username and password itentifiers are identical to those used in the python script.
 
