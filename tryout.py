@@ -8,9 +8,10 @@ from okapi_pkg import *
 #
 # For auth info: See https://okapiorbits.space/documentation/ or contact us.
 # Standard url is: https://api.okapiorbits.com/
-load_dotenv()
+load_dotenv('credentials.env')
 username = os.getenv("OKAPI_TEST_USERNAME")
 password = os.getenv("OKAPI_TEST_PASSWORD")
+print(username)
 # You can either load the username and password from the environment or a .env file or
 # simply hardcode them here for testing purposes.
 url = os.getenv("OKAPI_TEST_URL") # "https://api.okapiorbits.com/"
@@ -325,7 +326,7 @@ if error.get('status', '') == 'FATAL':
 satellite_to_add = {
     "satellite_id": "550e8400-e29b-11d4-a716-446655440000",
     "name": "My testing satellite",
-    "norad_ids": [1234567],
+    "norad_ids": [12345],
     "area": 1,
     "mass": 1,
     "thrust_uncertainty": 2,
@@ -354,10 +355,13 @@ if error.get('status', '') == 'FATAL':
 # print(added_satellite)
 
 #
-# Modify a satellite.
+# Modify a satellite (Specify the parameters of the satellite that need update)
 #
-object_to_modify = added_satellite
-object_to_modify["name"] = "my dog, the other satellite"
+object_to_modify = {
+    "satellite_id": added_satellite["satellite_id"],
+    "name": "My testing satellite new name",
+    "area": 0.02,
+}
 
 added_satellite, error = okapi_change_object(okapi_login, object_to_modify,
                                              'satellites/')

@@ -4,7 +4,7 @@ import json
 
 def okapi_change_object(okapi_login, object_to_change, url_endpoint, max_retries=3):
     """
-    Change (put) one object to the platform
+    Change (patch) one object to the platform
     :param okapi_login: dict containing at least URL, options and token for OKAPI. Can be obtained using okapi_init().
     :param object_to_change: the object (= satellite) to be modified. Note the dict must contain the key: 'satellite_id'.
     :param url_endpoint: the sub url, where to send the request, e.g. satellites
@@ -33,7 +33,7 @@ def okapi_change_object(okapi_login, object_to_change, url_endpoint, max_retries
     while retries <= max_retries:
 
         try:
-            response = requests.put(url, data=json.dumps(object_to_change),
+            response = requests.patch(url, data=json.dumps(object_to_change),
                                     headers=okapi_login['header'], timeout=5)
             # raise for status
             response.raise_for_status()
