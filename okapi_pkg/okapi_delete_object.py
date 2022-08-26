@@ -42,7 +42,7 @@ def okapi_delete_object(okapi_login, object_to_delete, url_endpoint, max_retries
     while retries <= max_retries:
         try:
             response = requests.delete(url, data=json.dumps(object_to_delete),
-                                       headers=okapi_login['header'], timeout=5)
+                                       headers=okapi_login['header'], timeout=10000)
             # raise for status
             response.raise_for_status()
             break

@@ -41,7 +41,7 @@ def okapi_get_objects(okapi_login, url_endpoint, sub_id='', max_retries=3):
     while retries <= max_retries:
         try:
             result["service"] = url_endpoint
-            response = requests.get(url, headers=okapi_login["header"], timeout=5)
+            response = requests.get(url, headers=okapi_login["header"], timeout=10000)
 
             # raise for status!
             response.raise_for_status()
