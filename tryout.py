@@ -368,6 +368,14 @@ if error.get('status', '') == 'FATAL':
     print(error)
     exit()
 
+#
+# Get a satellite's OEMS
+#
+satellite_oems, error = okapi_get_objects(okapi_login, 'satellites/{}/oems',
+                                               added_satellite["satellite_id"])
+if error.get('status', '') == 'FATAL':
+    print(error)
+    exit()
 
 
 #
