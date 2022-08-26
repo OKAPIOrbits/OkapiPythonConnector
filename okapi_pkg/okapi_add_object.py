@@ -56,7 +56,7 @@ def okapi_add_object(okapi_login, object_to_add, url_endpoint, max_retries=3):
 
         try:
             response = requests.post(url, data=json.dumps(object_to_add),
-                                     headers=okapi_login['header'], timeout=5)
+                                     headers=okapi_login['header'], timeout=10000)
             # raise for status
             response.raise_for_status()
             break
