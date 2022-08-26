@@ -312,6 +312,7 @@ elif error['status'] == 'WARNING':
 #
 # Get satellites (might be empty)
 #
+print("Getting satellites")
 all_satellites, error = okapi_get_objects(okapi_login, 'satellites')
 if error.get('status', '') == 'FATAL':
     print(error)
@@ -345,6 +346,7 @@ satellite_to_add = {
     "maneuver_strategy": "short_term_and_long_term"
 }
 
+print("Adding satellite")
 added_satellite, error = okapi_add_object(okapi_login, satellite_to_add,
                                           'satellites')
 if error.get('status', '') == 'FATAL':
@@ -359,6 +361,7 @@ if error.get('status', '') == 'FATAL':
 object_to_modify = added_satellite
 object_to_modify["name"] = "my dog, the other satellite"
 
+print("Changing satellite")
 added_satellite, error = okapi_change_object(okapi_login, object_to_modify,
                                              'satellites/')
 if error.get('status', '') == 'FATAL':
@@ -368,6 +371,7 @@ if error.get('status', '') == 'FATAL':
 #
 # Get a satellite's OEMS
 #
+print("Getting satellite OEMs")
 satellite_oems, error = okapi_get_objects(okapi_login, 'satellites/{}/oems',
                                                added_satellite["satellite_id"])
 if error.get('status', '') == 'FATAL':
@@ -379,6 +383,7 @@ if error.get('status', '') == 'FATAL':
 #
 # Delete a satellite
 #
+print("Deleting satellite")
 deleted_satellite, error = okapi_delete_object(okapi_login, added_satellite,
                                                'satellites/')
 if error.get('status', '') == 'FATAL':
