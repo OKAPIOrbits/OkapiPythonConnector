@@ -36,7 +36,7 @@ def okapi_get_objects(okapi_login, url_endpoint, sub_id='', max_retries=3):
         url = urljoin(okapi_login["url"], url_endpoint)
     else:
         url = urljoin(okapi_login["url"], url_endpoint.format(sub_id))
-
+    
     retries = 1
     while retries <= max_retries:
         try:

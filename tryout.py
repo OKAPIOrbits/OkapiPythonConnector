@@ -9,12 +9,12 @@ from okapi_pkg import *
 # For auth info: See https://okapiorbits.space/documentation/ or contact us.
 # Standard url is: https://api.okapiorbits.com/
 load_dotenv()
-username = os.getenv("OKAPI_TEST_USERNAME")
-password = os.getenv("OKAPI_TEST_PASSWORD")
-print(username)
+username =  os.getenv("OKAPI_TEST_USERNAME")
+password =  os.getenv("OKAPI_TEST_PASSWORD")
+
 # You can either load the username and password from the environment or a .env file or
 # simply hardcode them here for testing purposes.
-url = os.getenv("OKAPI_TEST_URL") # "https://api.okapiorbits.com/"
+url =   os.getenv("OKAPI_TEST_URL") #"https://api.okapiorbits.com/"
 okapi_login, error = okapi_init(url,
                                 username,
                                 password)
@@ -355,19 +355,28 @@ if error.get('status', '') == 'FATAL':
 # print(added_satellite)
 
 #
-# Modify a satellite (Specify the parameters of the satellite that need update)
+# Update a satellite (Specify the parameters of the satellite that need update)
 #
-object_to_modify = {
+satellite_to_be_updated = {
     "satellite_id": added_satellite["satellite_id"],
     "name": "My testing satellite new name",
     "area": 0.02,
 }
 
-added_satellite, error = okapi_change_object(okapi_login, object_to_modify,
-                                             'satellites/')
+updated_satellite, error = okapi_change_object(okapi_login, satellite_to_be_updated,'satellites')
 if error.get('status', '') == 'FATAL':
     print(error)
     exit()
+
+#
+# Get a satellite's OEMS
+#
+satellite_oems, error = okapi_get_objects(okapi_login, 'satellites/{}/oems',
+                                               added_satellite["satellite_id"])
+if error.get('status', '') == 'FATAL':
+    print(error)
+    exit()
+
 
 #
 # Delete a satellite
@@ -377,3 +386,5 @@ deleted_satellite, error = okapi_delete_object(okapi_login, added_satellite,
 if error.get('status', '') == 'FATAL':
     print(error)
     exit()
+
+
