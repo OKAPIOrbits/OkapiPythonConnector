@@ -28,7 +28,7 @@ def okapi_send_request(okapi_login, request_body, url_endpoint, max_retries=3):
     while retries <= max_retries:
         try:
             response = requests.post(url, data=json.dumps(request_body),
-                                     headers=okapi_login['header'], timeout=5)
+                                     headers=okapi_login['header'], timeout=10000)
             # raise for status
             response.raise_for_status()
             break

@@ -313,6 +313,7 @@ elif error['status'] == 'WARNING':
 #
 # Get satellites (might be empty)
 #
+print("Getting satellites")
 all_satellites, error = okapi_get_objects(okapi_login, 'satellites')
 if error.get('status', '') == 'FATAL':
     print(error)
@@ -346,6 +347,7 @@ satellite_to_add = {
     "maneuver_strategy": "short_term_and_long_term"
 }
 
+print("Adding satellite")
 added_satellite, error = okapi_add_object(okapi_login, satellite_to_add,
                                           'satellites')
 if error.get('status', '') == 'FATAL':
@@ -363,7 +365,20 @@ satellite_to_be_updated = {
     "area": 0.02,
 }
 
+print("Changing satellite")
 updated_satellite, error = okapi_change_object(okapi_login, satellite_to_be_updated,'satellites')
+if error.get('status', '') == 'FATAL':
+    print(error)
+    exit()
+
+
+
+#
+# Get a satellite's OEMS
+#
+print("Getting satellite OEMs")
+satellite_oems, error = okapi_get_objects(okapi_login, 'satellites/{}/oems',
+                                               added_satellite["satellite_id"])
 if error.get('status', '') == 'FATAL':
     print(error)
     exit()
@@ -373,6 +388,7 @@ if error.get('status', '') == 'FATAL':
 #
 # Delete a satellite
 #
+print("Deleting satellite")
 deleted_satellite, error = okapi_delete_object(okapi_login, added_satellite,
                                                'satellites/')
 if error.get('status', '') == 'FATAL':
