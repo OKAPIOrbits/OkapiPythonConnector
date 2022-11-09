@@ -33,7 +33,7 @@ def okapi_change_object(okapi_login, object_to_change, url_endpoint, max_retries
     while retries <= max_retries:
 
         try:
-            response = requests.put(url, data=json.dumps(object_to_change),
+            response = requests.patch(url, data=json.dumps(object_to_change),
                                     headers=okapi_login['header'], timeout=10000)
             # raise for status
             response.raise_for_status()
