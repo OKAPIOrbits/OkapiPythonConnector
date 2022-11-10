@@ -67,8 +67,9 @@ def test_get_objects(test_token, add_satellite):
 
 def test_change_objects(test_token, add_satellite):
     okapi_login = test_token['okapi_login']
+    object_to_modify = add_satellite
     object_to_modify = {
-        "satellite_id": object_to_add["satellite_id"],
+        "satellite_id": "550e8400-e29b-11d4-a716-446655440000",
         "area": 0.01
     }
     object_to_modify, error = okapi_change_object(okapi_login, object_to_modify, 'satellites')
