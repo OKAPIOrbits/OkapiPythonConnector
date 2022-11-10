@@ -57,27 +57,30 @@ def add_satellite(test_token):
 def test_get_objects(test_token, add_satellite):
     okapi_login = test_token['okapi_login']
     all_satellites, error = okapi_get_objects(okapi_login, 'satellites')
+    assert error['web_status'] == 200
     assert add_satellite
     assert 'satellite_id' in add_satellite
     assert 'elements' in all_satellites
     assert len(all_satellites['elements']) > 0
     assert 'satellite_id' in all_satellites['elements'][0]
-    assert error['web_status'] == 200
 
 
 def test_change_objects(test_token, add_satellite):
     okapi_login = test_token['okapi_login']
-    object_to_modify = add_satellite
-    object_to_modify["area"] = 0.01
-    added_satellite, error = okapi_change_object(okapi_login, object_to_modify, 'satellites')
-    assert 'satellite_id' in added_satellite
-    assert added_satellite["area"] == 0.01
-    assert error['web_status'] == 200
+    satellite_update = {
+        "satellite_id": add_satellite["satellite_id"],
+        "area": 0.01
+    }
+    updated_satellite, status = okapi_change_object(okapi_login, satellite_update, 'satellites')
+    assert status['web_status'] == 200
+    assert updated_satellite["satellite_id"] == add_satellite["satellite_id"]
+    assert updated_satellite["area"] == 0.01
+    assert updated_satellite["thrust_uncertainty"] == 2
 
 
 def test_remove_objects(test_token, add_satellite):
     okapi_login = test_token['okapi_login']
     added_satellite = add_satellite
     deleted_satellite, error = okapi_delete_object(okapi_login, added_satellite, 'satellites')
-    assert 'satellite_id' in deleted_satellite
     assert error['web_status'] == 200
+    assert 'satellite_id' in deleted_satellite
