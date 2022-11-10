@@ -38,7 +38,7 @@ jobs:
         flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
     - name: Test with pytest
       env:
-        OKAPI_TEST_URL: ${{ secrets.OKAPI_TEST_URL }}
+        OKAPI_TEST_URL: ${{ secrets.OKAPI_PROD_URL }}
         OKAPI_TEST_USERNAME: ${{ secrets.OKAPI_TEST_USERNAME }}
         OKAPI_TEST_PASSWORD: ${{ secrets.OKAPI_TEST_PASSWORD }}
       run: |
