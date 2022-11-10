@@ -67,11 +67,14 @@ def test_get_objects(test_token, add_satellite):
 
 def test_change_objects(test_token, add_satellite):
     okapi_login = test_token['okapi_login']
-    object_to_modify = add_satellite
-    object_to_modify["area"] = 0.01
-    added_satellite, error = okapi_change_object(okapi_login, object_to_modify, 'satellites')
+    object_to_modify = {
+        "satellite_id": object_to_add["satellite_id"],
+        "area": 0.01
+    }
+    object_to_modify, error = okapi_change_object(okapi_login, object_to_modify, 'satellites')
     assert 'satellite_id' in added_satellite
-    assert added_satellite["area"] == 0.01
+    assert object_to_modify["area"] == 0.01
+    assert object_to_modify["thrust_uncertainty"] == 2
     assert error['web_status'] == 200
 
 
