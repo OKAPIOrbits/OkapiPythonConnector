@@ -47,7 +47,7 @@ def add_satellite(test_token):
         "space_track_poc_address": "Examplestreet 32, 34562 Examplecity, Germany",
         "space_track_login": "example@someprovider.com",
         "active": True,
-        "maneuver_strategy": "short_term_and_long_term"
+        "maneuver_strategy": ["short_term", "long_term"]
     }
 
     added_satellite, error = okapi_add_object(okapi_login, object_to_add, 'satellites')
