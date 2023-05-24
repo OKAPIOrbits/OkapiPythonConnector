@@ -344,7 +344,7 @@ satellite_to_add = {
     "space_track_poc_address": "Examplestreet 32, 34562 Examplecity, Germany",
     "space_track_login": "example@someprovider.com",
     "active": True,
-    "maneuver_strategy": "short_term_and_long_term"
+    "maneuver_strategy": ["short_term", "long_term"]
 }
 
 print("Adding satellite")
